@@ -32,15 +32,15 @@
 7. **(DELETE) удаление записи**. Администратор способен удалять данные в БД. Кроме того, организатор может удалять/отменять проводимые им ивенты.
 ***
 # Предполагаемый стек технологий
-Java
-Gradle
-Spring Boot
-Spring Security
-JWT
-ElasticSearch
-Kafka
-Redis
-PostgreSQL
-Docker
+* Java
+* Gradle
+* Spring Boot
+* Spring Security
+* JWT
+* ElasticSearch
+* Kafka
+* Redis
+* PostgreSQL
+* Docker
 ***
 # База данных
