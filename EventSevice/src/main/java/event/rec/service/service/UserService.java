@@ -4,6 +4,7 @@ import event.rec.service.dto.UserDto;
 import event.rec.service.entities.UserEntity;
 import event.rec.service.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,10 +18,11 @@ import java.util.Optional;
 import static event.rec.service.mappers.UserMapper.UserDTOToUserEntity;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Optional<UserEntity> findUserEntityByLogin(String login) {
         return userRepository.findByLogin(login);

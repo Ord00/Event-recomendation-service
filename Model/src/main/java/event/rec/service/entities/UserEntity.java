@@ -9,6 +9,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "\"user\"")
 @Data
+@NoArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
