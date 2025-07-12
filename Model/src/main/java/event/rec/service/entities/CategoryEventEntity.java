@@ -1,4 +1,4 @@
-package event.rec.service.dto;
+package event.rec.service.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,15 +15,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "notification_log")
-public class NotificationLogEntity {
+@Table(name = "category_event")
+public class CategoryEventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
-    private UserEntity idUser;
+    @JoinColumn(name = "id_category")
+    private CategoryEntity idCategory;
 
 }

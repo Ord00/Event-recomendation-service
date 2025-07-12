@@ -1,4 +1,4 @@
-package event.rec.service.dto;
+package event.rec.service.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,8 +15,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "event_subscription")
-public class EventSubscriptionEntity {
+@Table(name = "event")
+public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
@@ -25,5 +25,9 @@ public class EventSubscriptionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
     private UserEntity idUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_venue")
+    private VenueEntity idVenue;
 
 }

@@ -1,4 +1,4 @@
-package event.rec.service.dto;
+package event.rec.service.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,4 +46,8 @@ public class UserEntity {
     @OneToOne(mappedBy = "user")
     private OrganizerEntity organizer;
 
+    public UserEntity(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
 }

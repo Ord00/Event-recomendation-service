@@ -1,4 +1,4 @@
-package event.rec.service.dto;
+package event.rec.service.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
