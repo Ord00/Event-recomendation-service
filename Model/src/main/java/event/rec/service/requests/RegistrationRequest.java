@@ -2,7 +2,7 @@ package event.rec.service.requests;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public record RegistrationRequest(
         @NotNull
