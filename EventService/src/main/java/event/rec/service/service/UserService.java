@@ -44,8 +44,8 @@ public class UserService implements UserDetailsService {
 
     public void createNewUser(UserDto userDTO) {
         UserDto userWithPasswordDTO = new UserDto(
-                passwordEncoder.encode(userDTO.login()),
-                userDTO.password());
+                userDTO.login(),
+                passwordEncoder.encode(userDTO.password()));
         UserEntity userEntity = UserDTOToUserEntity(userWithPasswordDTO);
         userRepository.save(userEntity);
     }

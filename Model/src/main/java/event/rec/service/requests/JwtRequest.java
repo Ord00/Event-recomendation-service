@@ -1,4 +1,4 @@
 package event.rec.service.requests;
 
-public record JwtRequest(String email, String password) {
+public record JwtRequest(String login, String password) {
 }

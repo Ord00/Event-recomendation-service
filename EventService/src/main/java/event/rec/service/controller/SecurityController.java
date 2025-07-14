@@ -33,14 +33,14 @@ public class SecurityController {
     @PostMapping("/signin")
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest jwtRequest) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.email(),
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.login(),
                     jwtRequest.password()));
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(),
                     ErrorMessage.INCORRECT_USER_DATA.getMessage()), HttpStatus.UNAUTHORIZED);
         }
 
-        UserDetails userDetails = userService.loadUserByUsername(jwtRequest.email());
+        UserDetails userDetails = userService.loadUserByUsername(jwtRequest.login());
         String token = jwtTokenUtils.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtResponse(token));
@@ -50,7 +50,9 @@ public class SecurityController {
     public ResponseEntity<?> registration(@Validated @RequestBody RegistrationRequest registrationRequest) {
 
         if (userService.findUserEntityByLogin(registrationRequest.login()).isPresent()) {
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), ErrorMessage.USER_EXISTS.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(),
+                    ErrorMessage.USER_EXISTS.getMessage()),
+                    HttpStatus.BAD_REQUEST);
         }
 
         UserDto userDTO = new UserDto(registrationRequest.login(), registrationRequest.password());

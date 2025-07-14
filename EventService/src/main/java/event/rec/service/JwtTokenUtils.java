@@ -17,10 +17,10 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JwtTokenUtils {
-    @Value("${event-recommendation-service.app.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${event-recommendation-service.app.lifetime}")
+    @Value("${jwt.lifetime}")
     private Duration lifetime;
 
     private SecretKey getSigningKey() {
