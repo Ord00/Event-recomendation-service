@@ -133,3 +133,22 @@ GROUP BY e.id,
 ORDER BY e.view_count DESC,
          subscribers_count DESC
     LIMIT 100;
+
+CREATE OR REPLACE FUNCTION get_user_role(user_id INTEGER)
+    RETURNS VARCHAR AS $$
+DECLARE
+    user_role VARCHAR;
+BEGIN
+    IF EXISTS (SELECT 1 FROM admin WHERE id = user_id) THEN
+        user_role := 'ADMIN';
+    ELSIF EXISTS (SELECT 1 FROM organizer WHERE id = user_id) THEN
+        user_role := 'ORGANIZER';
+    ELSIF EXISTS (SELECT 1 FROM common_user WHERE id = user_id) THEN
+        user_role := 'USER';
+    ELSE
+        user_role := NULL;
+    END IF;
+
+    RETURN user_role;
+END;
+$$ LANGUAGE plpgsql;

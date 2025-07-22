@@ -42,11 +42,12 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void createNewUser(UserDto userDTO) {
+    @Transactional
+    public UserEntity createNewUser(UserDto userDTO) {
         UserDto userWithPasswordDTO = new UserDto(
                 userDTO.login(),
                 passwordEncoder.encode(userDTO.password()));
         UserEntity userEntity = UserDTOToUserEntity(userWithPasswordDTO);
-        userRepository.save(userEntity);
+        return userRepository.save(userEntity);
     }
 }

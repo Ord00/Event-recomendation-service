@@ -34,6 +34,7 @@ public class JwtTokenUtils {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
+        claims.put("roles", userDetails.getAuthorities());
 
         Date issuedAt = new Date();
         Date expiredAt = new Date(issuedAt.getTime() + lifetime.toMillis());

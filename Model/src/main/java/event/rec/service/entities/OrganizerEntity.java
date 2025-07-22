@@ -17,7 +17,7 @@ public class OrganizerEntity {
 
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -27,4 +27,9 @@ public class OrganizerEntity {
     @Column(name = "organizer_name", nullable = false, length = 100)
     private String organizerName;
 
+    public OrganizerEntity(String organizerName) {
+        this.organizerName = organizerName;
+    }
+
+    public OrganizerEntity() {}
 }

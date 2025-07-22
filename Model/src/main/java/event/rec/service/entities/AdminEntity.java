@@ -8,6 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,11 +20,21 @@ import lombok.Setter;
 public class AdminEntity {
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private UserEntity userEntity;
 
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "full_name", nullable = false, length = 100)
+    private String fullName;
+
+    public AdminEntity(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public AdminEntity() {}
 }

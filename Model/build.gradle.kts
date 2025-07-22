@@ -1,6 +1,10 @@
 group = "event.rec.service"
 version = "0.0.1-SNAPSHOT"
 
+plugins {
+    id("org.springframework.boot")
+}
+
 dependencies {
     implementation("org.hibernate.orm:hibernate-spatial:6.4.4.Final")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
