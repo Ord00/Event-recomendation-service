@@ -1,6 +1,6 @@
 package event.rec.service.filter;
 
-import event.rec.service.JwtTokenUtils;
+import event.rec.service.utils.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;

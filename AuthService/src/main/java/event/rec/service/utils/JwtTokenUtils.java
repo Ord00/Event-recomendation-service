@@ -1,4 +1,4 @@
-package event.rec.service;
+package event.rec.service.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;

@@ -1,2 +1,5 @@
 rootProject.name = "event-recommendation-service"
-include("Model", "EventService")
+include("Model")
+include("EventService")
+include("AuthService")
+include("NotificationService")

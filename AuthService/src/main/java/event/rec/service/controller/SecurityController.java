@@ -1,6 +1,7 @@
 package event.rec.service.controller;
 
-import event.rec.service.JwtTokenUtils;
+
+import event.rec.service.utils.JwtTokenUtils;
 import event.rec.service.dto.UserDto;
 import event.rec.service.enums.ErrorMessage;
 import event.rec.service.exceptions.AppError;
