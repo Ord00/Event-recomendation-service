@@ -6,9 +6,6 @@ servers:
   - url: http://localhost:8080/auth/
     description: Auth server
 
-security:
-  - bearerAuth: []
-
 paths:
   /signin:
     post:
