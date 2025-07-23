@@ -38,7 +38,7 @@ import java.util.function.BiConsumer;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class SecurityController {
+public class AuthController {
 
     private final UserService userService;
     private final AdminService adminService;

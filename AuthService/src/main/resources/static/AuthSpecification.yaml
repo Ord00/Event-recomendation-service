@@ -1,0 +1,224 @@
+openapi: 3.1.0
+info:
+  title: Сервис авторизации
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/auth/
+    description: Auth server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /signin:
+    post:
+      summary: Метод входа в систему
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JwtRequest"
+      responses:
+        '200':
+          description: Успешный вход в систему
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtResponse"
+        '401':
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+  /register/user:
+    post:
+      summary: Регистрация обычного пользователя
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommonUserRegistrationRequest"
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtResponse"
+        '400':
+          description: Неверные данные или пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+  /register/organizer:
+    post:
+      summary: Регистрация организатора
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizerRegistrationRequest"
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtResponse"
+        '400':
+          description: Неверные данные или пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+  /admin/register:
+    post:
+      summary: Регистрация администратора (только для админов)
+      tags:
+        - Registration
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminRegistrationRequest"
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtResponse"
+        '400':
+          description: Неверные данные или пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+        '403':
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    JwtRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          example: user@example.com
+        password:
+          type: string
+          example: securePassword123
+
+    JwtResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    RegistrationRequest:
+      type: object
+      required:
+        - login
+        - password
+        - user_type
+      properties:
+        login:
+          type: string
+          example: user@example.com
+        password:
+          type: string
+          example: securePassword123
+        user_type:
+          type: string
+          enum: [ADMIN, USER, ORGANIZER]
+          description: Тип пользователя
+
+    AdminRegistrationRequest:
+      allOf:
+        - $ref: "#/components/schemas/RegistrationRequest"
+        - type: object
+          required:
+            - full_name
+          properties:
+            full_name:
+              type: string
+              example: "Иван Иванов"
+
+    CommonUserRegistrationRequest:
+      allOf:
+        - $ref: "#/components/schemas/RegistrationRequest"
+        - type: object
+          required:
+            - full_name
+            - phone_number
+          properties:
+            full_name:
+              type: string
+              example: "Петр Петров"
+            phone_number:
+              type: string
+              example: "+79001234567"
+
+    OrganizerRegistrationRequest:
+      allOf:
+        - $ref: "#/components/schemas/RegistrationRequest"
+        - type: object
+          required:
+            - organizer_name
+          properties:
+            organizer_name:
+              type: string
+              example: "Организация ООО"
+
+    AppError:
+      type: object
+      required:
+        - status
+        - message
+        - timestamp
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Пользователь уже существует"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+
