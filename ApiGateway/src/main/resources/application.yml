@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://auth-service:8080
+          predicates:
+            - Path=/auth/**
+        - id: event-service
+          uri: http://event-service:8081
+          predicates:
+            - Path=/events/**
+          filters:
+            - name: JwtFilter
