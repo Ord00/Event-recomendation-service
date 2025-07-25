@@ -8,7 +8,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/secured")
-public class MainController {
+public class UserController {
     @GetMapping("/user")
     public String userAccess(Principal principal) {
         return principal == null ? null : principal.getName();

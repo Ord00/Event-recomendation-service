@@ -1,0 +1,17 @@
+kafka:
+  signin:
+    request: "SignInReq"
+    response: "SignInResp"
+  register:
+    common:
+      request: "RegisterCommonUserReq"
+      response: "RegisterCommonUserResp"
+    organizer:
+      request: "RegisterOrganizerReq"
+      response: "RegisterOrganizerResp"
+    admin:
+      request: "RegisterAdminReq"
+      response: "RegisterAdminResp"
+
+
+
