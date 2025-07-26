@@ -1,3 +1,8 @@
 rootProject.name = "event-recommendation-service"
 include("Model")
-include("EventSevice")
+include("EventService")
+include("AuthService")
+include("NotificationService")
+include("ApiGateway")
+include("security-lib")
+include("UserService")
