@@ -23,5 +23,7 @@ kafka:
       request: "RegisterAdminReq"
       response: "RegisterAdminResp"
 
-
+server:
+  port: 8084
+  url: "http://localhost:${server.port}"
 
