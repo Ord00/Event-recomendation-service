@@ -20,6 +20,7 @@ import event.rec.service.utils.JwtTokenUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,9 +40,9 @@ public class AuthListener {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
 
-    @KafkaListener(topics = "${kafka.signin.request}")
-    @SendTo("${kafka.signin.response}")
-    public JwtResponse listenSignIn(JwtRequest request) {
+    @KafkaListener(topics = "${kafka.topics.signin.request}")
+    @SendTo("${kafka.topics.signin.response}")
+    public JwtResponse listenSignIn(@Payload JwtRequest request) {
         try {
             UserDetails userDetails = userService.loadUserByUsername(request.login());
 
@@ -56,9 +57,9 @@ public class AuthListener {
     }
 
     @Transactional
-    @KafkaListener(topics = "${kafka.register.common.request}")
-    @SendTo("${kafka.register.common.response}")
-    public Boolean listenRegisterCommonUser(CommonUserRegistrationRequest request) {
+    @KafkaListener(topics = "${kafka.topics.register.common.request}")
+    @SendTo("${kafka.topics.register.common.response}")
+    public Boolean listenRegisterCommonUser(@Payload CommonUserRegistrationRequest request) {
         return registerUser(request, (userId, req) ->
                 commonUserService.createCommonUser(
                         userId,
@@ -67,9 +68,9 @@ public class AuthListener {
     }
 
     @Transactional
-    @KafkaListener(topics = "${kafka.register.organizer.request}")
-    @SendTo("${kafka.register.organizer.response}")
-    public Boolean listenRegisterOrganizer(OrganizerRegistrationRequest request) {
+    @KafkaListener(topics = "${kafka.topics.register.organizer.request}")
+    @SendTo("${kafka.topics.register.organizer.response}")
+    public Boolean listenRegisterOrganizer(@Payload OrganizerRegistrationRequest request) {
         return registerUser(request, (userId, req) ->
                 organizerService.createOrganizer(
                         userId,
@@ -78,9 +79,9 @@ public class AuthListener {
     }
 
     @Transactional
-    @KafkaListener(topics = "${kafka.register.admin.request}")
-    @SendTo("${kafka.register.admin.response}")
-    public Boolean listenRegisterAdmin(AdminRegistrationRequest request) {
+    @KafkaListener(topics = "${kafka.topics.register.admin.request}")
+    @SendTo("${kafka.topics.register.admin.response}")
+    public Boolean listenRegisterAdmin(@Payload AdminRegistrationRequest request) {
         return registerUser(request, (userId, req) ->
                 adminService.createAdmin(
                         userId,

@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
