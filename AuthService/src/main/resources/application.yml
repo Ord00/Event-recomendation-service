@@ -9,7 +9,7 @@ springdoc:
   default-produces-media-type: application/json
 
 server:
-  address: http://localhost:8080
+  url: "http://localhost:8081"
 
 spring:
   kafka:
@@ -18,6 +18,8 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 kafka:
   signin:
