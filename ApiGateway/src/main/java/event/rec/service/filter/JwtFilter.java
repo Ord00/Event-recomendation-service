@@ -1,7 +1,6 @@
 package event.rec.service.filter;
 
 import event.rec.service.utils.JwtTokenUtils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
