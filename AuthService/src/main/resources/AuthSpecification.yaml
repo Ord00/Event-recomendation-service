@@ -171,6 +171,9 @@ components:
           required:
             - full_name
           properties:
+            user_type:
+              type: string
+              example: "ADMIN"
             full_name:
               type: string
               example: "Иван Иванов"
@@ -183,6 +186,9 @@ components:
             - full_name
             - phone_number
           properties:
+            user_type:
+              type: string
+              example: "USER"
             full_name:
               type: string
               example: "Петр Петров"
@@ -197,6 +203,9 @@ components:
           required:
             - organizer_name
           properties:
+            user_type:
+              type: string
+              example: "ORGANIZER"
             organizer_name:
               type: string
               example: "Организация ООО"
