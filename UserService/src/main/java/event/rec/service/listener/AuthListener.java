@@ -20,6 +20,7 @@ import event.rec.service.utils.JwtTokenUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,9 +40,9 @@ public class AuthListener {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
 
-    @KafkaListener(topics = "${kafka.signin.request}")
-    @SendTo("${kafka.signin.response}")
-    public JwtResponse listenSignIn(JwtRequest request) {
+    @KafkaListener(topics = "${kafka.topics.signin.request}")
+    @SendTo("${kafka.topics.signin.response}")
+    public JwtResponse listenSignIn(@Payload JwtRequest request) {
         try {
             UserDetails userDetails = userService.loadUserByUsername(request.login());
 
@@ -56,34 +57,34 @@ public class AuthListener {
     }
 
     @Transactional
-    @KafkaListener(topics = "${kafka.register.common.request}")
-    @SendTo("${kafka.register.common.response}")
-    public Boolean listenRegisterCommonUser(CommonUserRegistrationRequest request) {
-        return registerUser(request, (userId, req) ->
+    @KafkaListener(topics = "${kafka.topics.register.common.request}")
+    @SendTo("${kafka.topics.register.common.response}")
+    public Boolean listenRegisterCommonUser(@Payload CommonUserRegistrationRequest request) {
+        return registerUser(request, (userEntity, req) ->
                 commonUserService.createCommonUser(
-                        userId,
+                        userEntity,
                         new CommonUserDto(req.getFullName(), req.getPhoneNumber()))
         );
     }
 
     @Transactional
-    @KafkaListener(topics = "${kafka.register.organizer.request}")
-    @SendTo("${kafka.register.organizer.response}")
-    public Boolean listenRegisterOrganizer(OrganizerRegistrationRequest request) {
-        return registerUser(request, (userId, req) ->
+    @KafkaListener(topics = "${kafka.topics.register.organizer.request}")
+    @SendTo("${kafka.topics.register.organizer.response}")
+    public Boolean listenRegisterOrganizer(@Payload OrganizerRegistrationRequest request) {
+        return registerUser(request, (userEntity, req) ->
                 organizerService.createOrganizer(
-                        userId,
+                        userEntity,
                         new OrganizerDto(req.getOrganizerName()))
         );
     }
 
     @Transactional
-    @KafkaListener(topics = "${kafka.register.admin.request}")
-    @SendTo("${kafka.register.admin.response}")
-    public Boolean listenRegisterAdmin(AdminRegistrationRequest request) {
-        return registerUser(request, (userId, req) ->
+    @KafkaListener(topics = "${kafka.topics.register.admin.request}")
+    @SendTo("${kafka.topics.register.admin.response}")
+    public Boolean listenRegisterAdmin(@Payload AdminRegistrationRequest request) {
+        return registerUser(request, (userEntity, req) ->
                 adminService.createAdmin(
-                        userId,
+                        userEntity,
                         new AdminDto(req.getFullName()))
         );
     }
@@ -91,7 +92,7 @@ public class AuthListener {
     @Transactional
     public  <T extends RegistrationRequest> Boolean registerUser(
             T request,
-            BiConsumer<Long, T> userTypeCreator) {
+            BiConsumer<UserEntity, T> userTypeCreator) {
         if (userService.findUserEntityByLogin(request.getLogin()).isPresent()) {
             return false;
         }
@@ -99,7 +100,7 @@ public class AuthListener {
         UserDto userDTO = new UserDto(request.getLogin(), request.getPassword());
         UserEntity createdUser = userService.createNewUser(userDTO);
 
-        userTypeCreator.accept(createdUser.getId(), request);
+        userTypeCreator.accept(createdUser, request);
 
         return true;
     }

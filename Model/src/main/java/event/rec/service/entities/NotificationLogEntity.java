@@ -18,7 +18,7 @@ import lombok.Setter;
 @Table(name = "notification_log")
 public class NotificationLogEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
