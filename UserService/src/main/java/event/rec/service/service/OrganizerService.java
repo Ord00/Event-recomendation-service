@@ -2,6 +2,7 @@ package event.rec.service.service;
 
 import event.rec.service.dto.OrganizerDto;
 import event.rec.service.entities.OrganizerEntity;
+import event.rec.service.entities.UserEntity;
 import event.rec.service.repository.OrganizerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ public class OrganizerService {
     private final OrganizerRepository organizerRepository;
 
     @Transactional
-    public void createOrganizer(Long id, OrganizerDto organizerDTO) {
+    public void createOrganizer(UserEntity userEntity, OrganizerDto organizerDTO) {
         OrganizerEntity organizerEntity = OrganizerDTOToEntity(organizerDTO);
-        organizerEntity.setId(id);
+        organizerEntity.setUser(userEntity);
         organizerRepository.save(organizerEntity);
     }
 }

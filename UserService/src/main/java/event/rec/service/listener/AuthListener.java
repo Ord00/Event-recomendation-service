@@ -60,9 +60,9 @@ public class AuthListener {
     @KafkaListener(topics = "${kafka.topics.register.common.request}")
     @SendTo("${kafka.topics.register.common.response}")
     public Boolean listenRegisterCommonUser(@Payload CommonUserRegistrationRequest request) {
-        return registerUser(request, (userId, req) ->
+        return registerUser(request, (userEntity, req) ->
                 commonUserService.createCommonUser(
-                        userId,
+                        userEntity,
                         new CommonUserDto(req.getFullName(), req.getPhoneNumber()))
         );
     }
@@ -71,9 +71,9 @@ public class AuthListener {
     @KafkaListener(topics = "${kafka.topics.register.organizer.request}")
     @SendTo("${kafka.topics.register.organizer.response}")
     public Boolean listenRegisterOrganizer(@Payload OrganizerRegistrationRequest request) {
-        return registerUser(request, (userId, req) ->
+        return registerUser(request, (userEntity, req) ->
                 organizerService.createOrganizer(
-                        userId,
+                        userEntity,
                         new OrganizerDto(req.getOrganizerName()))
         );
     }
@@ -82,9 +82,9 @@ public class AuthListener {
     @KafkaListener(topics = "${kafka.topics.register.admin.request}")
     @SendTo("${kafka.topics.register.admin.response}")
     public Boolean listenRegisterAdmin(@Payload AdminRegistrationRequest request) {
-        return registerUser(request, (userId, req) ->
+        return registerUser(request, (userEntity, req) ->
                 adminService.createAdmin(
-                        userId,
+                        userEntity,
                         new AdminDto(req.getFullName()))
         );
     }
@@ -92,7 +92,7 @@ public class AuthListener {
     @Transactional
     public  <T extends RegistrationRequest> Boolean registerUser(
             T request,
-            BiConsumer<Long, T> userTypeCreator) {
+            BiConsumer<UserEntity, T> userTypeCreator) {
         if (userService.findUserEntityByLogin(request.getLogin()).isPresent()) {
             return false;
         }
@@ -100,7 +100,7 @@ public class AuthListener {
         UserDto userDTO = new UserDto(request.getLogin(), request.getPassword());
         UserEntity createdUser = userService.createNewUser(userDTO);
 
-        userTypeCreator.accept(createdUser.getId(), request);
+        userTypeCreator.accept(createdUser, request);
 
         return true;
     }

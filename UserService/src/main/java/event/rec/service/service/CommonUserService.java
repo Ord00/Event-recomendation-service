@@ -2,6 +2,7 @@ package event.rec.service.service;
 
 import event.rec.service.dto.CommonUserDto;
 import event.rec.service.entities.CommonUserEntity;
+import event.rec.service.entities.UserEntity;
 import event.rec.service.repository.CommonUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ public class CommonUserService {
     private final CommonUserRepository commonUserRepository;
 
     @Transactional
-    public void createCommonUser(Long id, CommonUserDto commonUserDTO) {
+    public void createCommonUser(UserEntity userEntity, CommonUserDto commonUserDTO) {
         CommonUserEntity commonUserEntity = CommonUserDTOToEntity(commonUserDTO);
-        commonUserEntity.setId(id);
+        commonUserEntity.setUserEntity(userEntity);
         commonUserRepository.save(commonUserEntity);
     }
 }

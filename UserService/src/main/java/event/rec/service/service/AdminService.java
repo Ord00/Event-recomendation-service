@@ -2,6 +2,7 @@ package event.rec.service.service;
 
 import event.rec.service.dto.AdminDto;
 import event.rec.service.entities.AdminEntity;
+import event.rec.service.entities.UserEntity;
 import event.rec.service.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ public class AdminService {
     private final AdminRepository adminRepository;
 
     @Transactional
-    public void createAdmin(Long id, AdminDto adminDTO) {
+    public void createAdmin(UserEntity userEntity, AdminDto adminDTO) {
         AdminEntity adminEntity = AdminDTOToEntity(adminDTO);
-        adminEntity.setId(id);
+        adminEntity.setUserEntity(userEntity);
         adminRepository.save(adminEntity);
     }
 }
