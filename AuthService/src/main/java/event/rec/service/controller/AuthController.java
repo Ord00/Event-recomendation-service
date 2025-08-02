@@ -38,18 +38,19 @@ public class AuthController {
     @Value("${kafka.signin.response}")
     private String signInReplyTopic;
 
-    private final ReplyingKafkaTemplate<String, RegistrationRequest, Boolean> registerTemplate;
-
+    private final ReplyingKafkaTemplate<String, CommonUserRegistrationRequest, Boolean> commonRegisterTemplate;
     @Value("${kafka.register.common.request}")
     private String registerCommonUserRequestTopic;
     @Value("${kafka.register.common.response}")
     private String registerCommonUserReplyTopic;
 
+    private final ReplyingKafkaTemplate<String, OrganizerRegistrationRequest, Boolean> organizerRegisterTemplate;
     @Value("${kafka.register.organizer.request}")
     private String registerOrganizerRequestTopic;
     @Value("${kafka.register.organizer.response}")
     private String registerOrganizerReplyTopic;
 
+    private final ReplyingKafkaTemplate<String, AdminRegistrationRequest, Boolean> adminRegisterTemplate;
     @Value("${kafka.register.admin.request}")
     private String registerAdminRequestTopic;
     @Value("${kafka.register.admin.response}")
@@ -82,25 +83,38 @@ public class AuthController {
 
     @PostMapping("/register/user")
     public ResponseEntity<?> registerCommonUser(@Validated @RequestBody CommonUserRegistrationRequest request) {
-        return registerUser(registerCommonUserRequestTopic, registerCommonUserReplyTopic, request);
+        return registerUser(
+                registerCommonUserRequestTopic,
+                registerCommonUserReplyTopic,
+                request,
+                commonRegisterTemplate);
     }
 
     @PostMapping("/register/organizer")
     public ResponseEntity<?> registerOrganizer(@Validated @RequestBody OrganizerRegistrationRequest request) {
-        return registerUser(registerOrganizerRequestTopic, registerOrganizerReplyTopic, request);
+        return registerUser(
+                registerOrganizerRequestTopic,
+                registerOrganizerReplyTopic,
+                request,
+                organizerRegisterTemplate);
     }
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerAdmin(@Validated @RequestBody AdminRegistrationRequest request) {
-        return registerUser(registerAdminRequestTopic, registerAdminReplyTopic, request);
+        return registerUser(
+                registerAdminRequestTopic,
+                registerAdminReplyTopic,
+                request,
+                adminRegisterTemplate);
     }
 
-    private ResponseEntity<?> registerUser(String requestTopic,
+    private <T extends RegistrationRequest> ResponseEntity<?> registerUser(String requestTopic,
                                            String responseTopic,
-                                           RegistrationRequest request) {
+                                           T request,
+                                           ReplyingKafkaTemplate<String, T, Boolean> registerTemplate) {
         try {
-            ProducerRecord<String, RegistrationRequest> record =
+            ProducerRecord<String, T> record =
                     new ProducerRecord<>(requestTopic, request);
 
             record.headers().add(new RecordHeader(
@@ -108,7 +122,7 @@ public class AuthController {
                     responseTopic.getBytes()
             ));
 
-            RequestReplyFuture<String, RegistrationRequest, Boolean> future =
+            RequestReplyFuture<String, T, Boolean> future =
                     registerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
 
             if (future.get().value()) {
