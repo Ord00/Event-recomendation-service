@@ -1,6 +1,6 @@
 package event.rec.service.filter;
 
-import event.rec.service.utils.JwtTokenUtils;
+import event.rec.service.utils.JwtParser;
 import lombok.extern.slf4j.Slf4j;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -16,11 +16,11 @@ import java.util.List;
 @Component
     public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
 
-    private final JwtTokenUtils jwtTokenUtils;
+    private final JwtParser jwtParser;
 
-    public JwtFilter(JwtTokenUtils jwtTokenUtils) {
+    public JwtFilter(JwtParser jwtParser) {
         super(Config.class);
-        this.jwtTokenUtils = jwtTokenUtils;
+        this.jwtParser = jwtParser;
     }
 
     @Override
@@ -34,8 +34,8 @@ import java.util.List;
                 jwtToken = authHeader.substring(7);
                 try {
                     if (!jwtToken.isEmpty()) {
-                        username = jwtTokenUtils.getUsername(jwtToken);
-                        List<String> roles = jwtTokenUtils.getRoles(jwtToken);
+                        username = jwtParser.getUsername(jwtToken);
+                        List<String> roles = jwtParser.getRoles(jwtToken);
 
                         exchange.getRequest().mutate()
                                 .header("X-User-Name", username)

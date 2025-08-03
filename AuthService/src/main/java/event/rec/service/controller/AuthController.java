@@ -57,7 +57,7 @@ public class AuthController {
     private String registerAdminReplyTopic;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest jwtRequest) {
+    public ResponseEntity<?> signIn(@RequestBody JwtRequest jwtRequest) {
         try {
             ProducerRecord<String, JwtRequest> record = new ProducerRecord<>(
                     signInRequestTopic,
@@ -126,7 +126,7 @@ public class AuthController {
                     registerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
 
             if (future.get().value()) {
-                return createAuthToken(new JwtRequest(request.getLogin(), request.getPassword()));
+                return signIn(new JwtRequest(request.getLogin(), request.getPassword()));
             } else {
                 return new ResponseEntity<>(
                         new AppError(HttpStatus.BAD_REQUEST.value(), ErrorMessage.USER_EXISTS.getMessage()),

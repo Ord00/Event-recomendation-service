@@ -16,7 +16,7 @@ import event.rec.service.service.AdminService;
 import event.rec.service.service.CommonUserService;
 import event.rec.service.service.OrganizerService;
 import event.rec.service.service.UserService;
-import event.rec.service.utils.JwtTokenUtils;
+import event.rec.service.utils.TokenGenerator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -38,7 +38,7 @@ public class AuthListener {
     private final OrganizerService organizerService;
     private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenUtils jwtTokenUtils;
+    private final TokenGenerator tokenGenerator;
 
     @KafkaListener(topics = "${kafka.topics.signin.request}")
     @SendTo("${kafka.topics.signin.response}")
@@ -47,7 +47,7 @@ public class AuthListener {
             UserDetails userDetails = userService.loadUserByUsername(request.login());
 
             if (passwordEncoder.matches(request.password(), userDetails.getPassword())) {
-                String token = jwtTokenUtils.generateToken(userDetails);
+                String token = tokenGenerator.generateToken(userDetails);
                 return new JwtResponse(token);
             }
             throw new BadCredentialsException(ErrorMessage.INCORRECT_USER_DATA.getMessage());

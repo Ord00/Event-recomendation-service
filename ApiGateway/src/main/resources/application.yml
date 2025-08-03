@@ -5,7 +5,7 @@ spring:
         webflux:
           routes:
             - id: auth-service
-              uri: http://auth-service:8082
+              uri: http://localhost:8082
               predicates:
                 - Path=/auth/**
             - id: user-service
@@ -15,7 +15,7 @@ spring:
               filters:
                 - name: JwtFilter
             - id: event-service
-              uri: http://event-service:8083
+              uri: http://localhost:8083
               predicates:
                 - Path=/events/**
               filters:
@@ -26,3 +26,9 @@ spring:
 server:
   port: 8081
   url: "http://localhost:${server.port}"
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.web: TRACE
