@@ -1,13 +1,9 @@
-group = "com.recipemaster"
+group = "event.rec.service"
 version = "0.0.1-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation(project(":Model"))
-    implementation(project(":security-lib"))
+    implementation(project(":security-core"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

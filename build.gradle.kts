@@ -6,7 +6,7 @@ plugins {
 
 }
 
-group = "com.recipemaster"
+group = "event.rec.service"
 version = "0.0.1-SNAPSHOT"
 
 dependencyManagement {

@@ -1,8 +1,8 @@
-group = "com.recipemaster"
+group = "event.rec.service"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation(project(":security-lib"))
+    implementation(project(":security-core"))
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux:4.3.0")

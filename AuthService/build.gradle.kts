@@ -1,13 +1,9 @@
-group = "com.recipemaster"
+group = "event.rec.service"
 version = "0.0.1-SNAPSHOT"
-
-plugins {
-    id("org.springframework.boot")
-}
 
 dependencies {
     implementation(project(":Model"))
-    implementation(project(":security-lib"))
+    implementation(project(":security-core"))
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.springframework.boot:spring-boot-starter-web")
