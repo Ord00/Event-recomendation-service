@@ -1,0 +1,463 @@
+openapi: 3.1.0
+info:
+  title: Сервис событий
+  description: Сервис событий
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081/event/
+    description: Event service
+paths:
+  /create/event:
+    post:
+      summary: Создать мероприятие
+      tags:
+        - Changing Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequest"
+      responses:
+        '200':
+          description: Успешное создание мероприятия
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateEventResponse"
+        '401':
+          description: Неверные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+  /delete/event/{eventId}:
+    delete:
+      summary: Удалить событие
+      tags:
+        - Changing Events
+      responses:
+        '200':
+          description: Успешный вход в систему
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteEventResponse"
+        '401':
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+  /update/event/{eventId}:
+    put:
+      summary: Изменить данные события
+      tags:
+        - Changing Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventRequest"
+      responses:
+        '200':
+          description: Успешное обновление данных события
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateEventResponse"
+        '401':
+          description: Неверные данные события
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+
+  /add/to/favourite:
+    post:
+      summary: Добавить в избранное
+      tags:
+        - Changing Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddToFavouriteRequest"
+      responses:
+        '200':
+          description: Успешное добавление события в избранное
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddToFavouriteResponse"
+        '401':
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
+  /view/favourite/events:
+    get:
+      summary: Отобразить избранные события
+      tags:
+        - View Events
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: integer
+          required: true
+          example: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Успешный вывод избранных событий
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ViewFavouriteResponse"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+  /search/events:
+    get:
+      summary: Найти события по заданным условиям
+      tags:
+        - View Events
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          example: "концерт"
+        - in: query
+          name: categoryIds
+          schema:
+            type: array
+            items:
+              type: integer
+          example: [ 1, 2 ]
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+          example: "2024-01-01T00:00:00Z"
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+          example: "2024-12-31T23:59:59Z"
+        - in: query
+          name: radius
+          schema:
+            type: number
+          example: 5.0
+        - in: query
+          name: lat
+          schema:
+            type: number
+          example: 55.7558
+        - in: query
+          name: lon
+          schema:
+            type: number
+          example: 37.6176
+      responses:
+        '200':
+          description: Успешно найдены события
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchEventsResponse"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+  /view/events/nearby:
+    get:
+      summary: Найти события поблизости
+      tags:
+        - View Events
+      parameters:
+        - in: query
+          name: lat
+          schema:
+            type: number
+          required: true
+          example: 55.7558
+        - in: query
+          name: lon
+          schema:
+            type: number
+          required: true
+          example: 37.6176
+        - in: query
+          name: radius
+          schema:
+            type: number
+          example: 10.0
+        - in: query
+          name: maxResults
+          schema:
+            type: integer
+          example: 20
+      responses:
+        '200':
+          description: Успешно найдены события поблизости
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ViewEventsNearbyResponse"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+
+components:
+  responses:
+    Unauthorized:
+      description: Неавторизованный доступ
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+  schemas:
+    CreateEventRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Концерт"
+        description:
+          type: string
+          example: "Группа 'Кино' в Москве"
+        startTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T20:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T23:00:00Z"
+        venueId:
+          type: integer
+          example: 1
+        categoryIds:
+          type: array
+          items:
+            type: integer
+          example: [1, 2]
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED]
+          example: "PUBLISHED"
+      required:
+        - title
+        - startTime
+        - endTime
+        - venueId
+
+    CreateEventResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "Концерт"
+        organizerName:
+          type: string
+          example: "Рок-клуб"
+        startTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T20:00:00Z"
+
+    DeleteEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Событие успешно удалено"
+        deletedEventId:
+          type: integer
+          example: 123
+
+    UpdateEventRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Обновленный концерт"
+        description:
+          type: string
+          example: "Группа 'Кино' в Москве - обновленное описание"
+        startTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T20:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T23:00:00Z"
+        venueId:
+          type: integer
+          example: 2
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED, CANCELED]
+          example: "PUBLISHED"
+      required:
+        - title
+
+    UpdateEventResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "Обновленный концерт"
+        status:
+          type: string
+          example: "PUBLISHED"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+
+    ViewFavouriteResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          eventId:
+            type: integer
+            example: 123
+          title:
+            type: string
+            example: "Концерт"
+          startTime:
+            type: string
+            format: date-time
+            example: "2024-12-31T20:00:00Z"
+          organizerName:
+            type: string
+            example: "Рок-клуб"
+
+    SearchEventsResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/EventDetails"
+
+    AddToFavouriteRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 1
+        eventId:
+          type: integer
+          example: 123
+        notifyTime:
+          type: string
+          example: "1 hour"
+      required:
+        - userId
+        - eventId
+
+    AddToFavouriteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        subscriptionId:
+          type: integer
+          example: 456
+
+    ViewEventsNearbyResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/EventDetails"
+
+    EventDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "Концерт"
+        description:
+          type: string
+          example: "Группа 'Кино' в Москве"
+        startTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T20:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          example: "2024-12-31T23:00:00Z"
+        venue:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            address:
+              type: string
+              example: "Москва, Красная площадь"
+        organizer:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Рок-клуб"
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "Музыка"
+
+    AppError:
+      type: object
+      required:
+        - status
+        - message
+        - timestamp
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Пользователь уже существует"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
