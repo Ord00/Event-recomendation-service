@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:8081/event/
     description: Event service
 paths:
-  /create/event:
+  /create:
     post:
       summary: Создать мероприятие
       tags:
@@ -32,7 +32,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppError"
 
-  /delete/event/{eventId}:
+  /delete/{eventId}:
     delete:
       summary: Удалить событие
       tags:
@@ -51,7 +51,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppError"
 
-  /update/event/{eventId}:
+  /update/{eventId}:
     put:
       summary: Изменить данные события
       tags:
@@ -100,7 +100,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppError"
-  /view/favourite/events:
+  /view/favourite:
     get:
       summary: Отобразить избранные события
       tags:
@@ -127,7 +127,7 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
-  /search/events:
+  /search:
     get:
       summary: Найти события по заданным условиям
       tags:
@@ -182,7 +182,7 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
-  /view/events/nearby:
+  /view/nearby:
     get:
       summary: Найти события поблизости
       tags:
