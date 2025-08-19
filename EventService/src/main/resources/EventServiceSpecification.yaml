@@ -134,11 +134,6 @@ paths:
         - View Events
       parameters:
         - in: query
-          name: query
-          schema:
-            type: string
-          example: "концерт"
-        - in: query
           name: categoryIds
           schema:
             type: array
@@ -157,21 +152,6 @@ paths:
             type: string
             format: date-time
           example: "2024-12-31T23:59:59Z"
-        - in: query
-          name: radius
-          schema:
-            type: number
-          example: 5.0
-        - in: query
-          name: lat
-          schema:
-            type: number
-          example: 55.7558
-        - in: query
-          name: lon
-          schema:
-            type: number
-          example: 37.6176
       responses:
         '200':
           description: Успешно найдены события
@@ -189,27 +169,37 @@ paths:
         - View Events
       parameters:
         - in: query
-          name: lat
+          name: categoryIds
           schema:
-            type: number
-          required: true
-          example: 55.7558
+            type: array
+            items:
+              type: integer
+          example: [ 1, 2 ]
         - in: query
-          name: lon
+          name: interval
           schema:
-            type: number
+            type: string
+            format: duration
+          description: "ISO-8601 duration format"
+          examples:
+            oneHour:
+              value: "PT1H"
+            thirtyMinutes:
+              value: "PT30M"
+            sevenDays:
+              value: "P7D"
+            complex:
+              value: "P1DT2H30M15S"
+        - in: query
+          name: location
+          schema:
+            $ref: "#/components/schemas/Point"
           required: true
-          example: 37.6176
         - in: query
           name: radius
           schema:
             type: number
           example: 10.0
-        - in: query
-          name: maxResults
-          schema:
-            type: integer
-          example: 20
       responses:
         '200':
           description: Успешно найдены события поблизости
@@ -230,6 +220,19 @@ components:
           schema:
             $ref: "#/components/schemas/AppError"
   schemas:
+    Point:
+      type: object
+      properties:
+        x:
+          type: integer
+          example: 1
+        y:
+          type: integer
+          example: 2
+      required:
+        - x
+        - y
+
     CreateEventRequest:
       type: object
       properties:
@@ -374,7 +377,17 @@ components:
           example: 123
         notifyTime:
           type: string
-          example: "1 hour"
+          format: duration
+          description: "ISO-8601 duration format"
+          examples:
+            oneHour:
+              value: "PT1H"
+            thirtyMinutes:
+              value: "PT30M"
+            sevenDays:
+              value: "P7D"
+            complex:
+              value: "P1DT2H30M15S"
       required:
         - userId
         - eventId
