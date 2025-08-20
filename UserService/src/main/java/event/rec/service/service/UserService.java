@@ -68,4 +68,8 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = UserDTOToUserEntity(userWithPasswordDTO);
         return userRepository.save(userEntity);
     }
+
+    public UserEntity findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

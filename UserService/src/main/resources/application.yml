@@ -35,6 +35,11 @@ kafka:
       admin:
         request: "RegisterAdminReq"
         response: "RegisterAdminResp"
+    find:
+      by:
+        id:
+          request: "FindByIdReq"
+          response: "FindByIdResp"
 
 server:
   port: 8084

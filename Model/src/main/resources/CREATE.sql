@@ -8,7 +8,7 @@ CREATE TABLE "user" (
 );
 
 -- Таблица администраторов
-CREATE TABLE admin (
+CREATE TABLE "admin" (
      id INTEGER PRIMARY KEY REFERENCES "user"(id),
      full_name VARCHAR(100) NOT NULL
 );
@@ -49,7 +49,7 @@ CREATE TABLE event (
    recurrence VARCHAR(20),
    status VARCHAR(20) NOT NULL CHECK (status IN ('DRAFT', 'PUBLISHED', 'CANCELED', 'COMPLETED')),
    view_count INTEGER DEFAULT 0,
-   id_user INTEGER NOT NULL REFERENCES "user"(id),
+   id_organizer INTEGER NOT NULL REFERENCES "organizer"(id),
    id_venue INTEGER NOT NULL REFERENCES venue(id)
 );
 
@@ -82,7 +82,7 @@ CREATE TABLE notification_log (
 );
 
 -- Индексы для производительности
-CREATE INDEX idx_events_user ON event(id_user);
+CREATE INDEX idx_events_user ON event(id_organizer);
 CREATE INDEX idx_events_venue ON event(id_venue);
 CREATE INDEX idx_events_status ON event(status);
 CREATE INDEX idx_events_time ON event(start_time, end_time);
@@ -116,7 +116,7 @@ SELECT e.id,
        e.start_time,
        e.end_time,
        e.status,
-       e.id_user,
+       e.id_organizer,
        e.id_venue,
        e.view_count,
        COUNT(es.id) AS subscribers_count
@@ -127,7 +127,7 @@ GROUP BY e.id,
          e.start_time,
          e.end_time,
          e.status,
-         e.id_user,
+         e.id_organizer,
          e.id_venue,
          e.view_count
 ORDER BY e.view_count DESC,
