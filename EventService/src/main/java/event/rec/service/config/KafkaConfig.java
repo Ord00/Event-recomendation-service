@@ -1,7 +1,6 @@
 package event.rec.service.config;
 
 import event.rec.service.entities.OrganizerEntity;
-import event.rec.service.entities.UserEntity;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -33,9 +32,7 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
-
-    @Bean
-    public <T extends UserEntity> ConsumerFactory<String, T> findUserConsumerFactory(Class<T> userClass) {
+    public <T> ConsumerFactory<String, T> createConsumerFactory(Class<T> userClass) {
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
@@ -68,11 +65,13 @@ public class KafkaConfig {
 
     @Bean
     public ReplyingKafkaTemplate<String, Long, OrganizerEntity> findOrganizerTemplate(
-            ProducerFactory<String, Long> organizerFindProducerFactory,
-            ConsumerFactory<String, OrganizerEntity> organizerFindConsumerFactory) {
+            ProducerFactory<String, Long> organizerFindProducerFactory) {
+
+        ConsumerFactory<String, OrganizerEntity> organizerConsumerFactory =
+                createConsumerFactory(OrganizerEntity.class);
 
         ConcurrentMessageListenerContainer<String, OrganizerEntity> replyContainer =
-                replyContainer(organizerFindConsumerFactory, "auth-group", findOrganizerReplyTopic);
+                replyContainer(organizerConsumerFactory, "auth-group", findOrganizerReplyTopic);
 
         return new ReplyingKafkaTemplate<>(organizerFindProducerFactory, replyContainer) {{
             setDefaultTopic(findOrganizerRequestTopic);

@@ -64,7 +64,7 @@ CREATE TABLE category_event (
 -- Таблица подписок
 CREATE TABLE event_subscription (
     id BIGSERIAL PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES "user"(id),
+    id_user INTEGER NOT NULL REFERENCES common_user(id),
     id_event INTEGER NOT NULL REFERENCES event(id),
     notify_time INTERVAL NOT NULL,
     status VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'COMPLETED')),
@@ -74,7 +74,7 @@ CREATE TABLE event_subscription (
 -- Таблица уведомлений
 CREATE TABLE notification_log (
     id BIGSERIAL PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES "user"(id),
+    id_user INTEGER NOT NULL REFERENCES common_user(id),
     id_event INTEGER NOT NULL REFERENCES event(id),
     channel VARCHAR(10) NOT NULL CHECK (channel IN ('EMAIL', 'SMS', 'PUSH')),
     status VARCHAR(20) NOT NULL CHECK (status IN ('PENDING', 'SENT', 'FAILED')),
