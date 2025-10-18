@@ -1,6 +1,3 @@
-group = "event.rec.service"
-version = "0.0.1-SNAPSHOT"
-
 dependencies {
     implementation(project(":Model"))
     implementation(project(":security-core"))
@@ -15,8 +12,4 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("org.springframework.security:spring-security-test")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }

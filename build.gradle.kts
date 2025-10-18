@@ -9,18 +9,12 @@ plugins {
 group = "event.rec.service"
 version = "0.0.1-SNAPSHOT"
 
-dependencyManagement {
-	imports {
-		mavenBom("org.springframework.boot:spring-boot-dependencies:3.5.3")
-	}
-}
-
 allprojects {
 	apply(plugin = "java")
 	apply(plugin = "io.spring.dependency-management")
 	apply(plugin = "org.springdoc.openapi-gradle-plugin")
 
-	group = "com.recipemaster"
+	group = "event.rec.service"
 	version = "0.0.1-SNAPSHOT"
 
 	java {
