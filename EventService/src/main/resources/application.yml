@@ -1,19 +1,28 @@
 spring:
   application:
     name: event-recommendation-service
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: f121d
-    url: jdbc:postgresql://localhost:5432/Events
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-jwt:
-  secret: 1lfd234269kadv43mvn856xl45f7kad423423fkad
-  lifetime: 60000
+  config:
+    import:
+      - db-config.yml
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: find-user-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 8083
   url: "http://localhost:${server.port}"
+
+kafka:
+  topics:
+    find:
+      by:
+        id:
+          request: "FindByIdReq"
+          response: "FindByIdResp"

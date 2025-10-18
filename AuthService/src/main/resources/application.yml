@@ -48,3 +48,12 @@ kafka:
 server:
   port: 8082
   url: "http://localhost:${server.port}"
+
+gateway:
+  port: 8081
+  url: "http://localhost:${gateway.port}"
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: TRACE

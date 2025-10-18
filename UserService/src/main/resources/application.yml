@@ -1,12 +1,7 @@
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: f121d
-    url: jdbc:postgresql://localhost:5432/Events
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  config:
+    import:
+      - db-config.yml
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -35,6 +30,11 @@ kafka:
       admin:
         request: "RegisterAdminReq"
         response: "RegisterAdminResp"
+    find:
+      by:
+        id:
+          request: "FindByIdReq"
+          response: "FindByIdResp"
 
 server:
   port: 8084

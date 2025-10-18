@@ -3,7 +3,7 @@ info:
   title: Сервис авторизации
   version: 1.0.0
 servers:
-  - url: http://localhost:8082/auth/
+  - url: http://localhost:8081/auth/
     description: Auth server
 
 paths:
@@ -171,6 +171,9 @@ components:
           required:
             - full_name
           properties:
+            login:
+              type: string
+              example: admin@example.com
             user_type:
               type: string
               example: "ADMIN"
@@ -186,6 +189,9 @@ components:
             - full_name
             - phone_number
           properties:
+            login:
+              type: string
+              example: user@example.com
             user_type:
               type: string
               example: "USER"
@@ -203,6 +209,9 @@ components:
           required:
             - organizer_name
           properties:
+            login:
+              type: string
+              example: organizer@example.com
             user_type:
               type: string
               example: "ORGANIZER"

@@ -26,4 +26,8 @@ public class CategoryEventEntity {
     @JoinColumn(name = "id_category")
     private CategoryEntity idCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_event")
+    private EventEntity idEvent;
+
 }

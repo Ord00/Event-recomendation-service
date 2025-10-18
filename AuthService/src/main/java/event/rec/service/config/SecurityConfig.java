@@ -26,8 +26,8 @@ public class SecurityConfig {
 
     private final TokenFilter tokenFilter;
 
-    @Value("${server.url}")
-    private String serverUrl;
+    @Value("${gateway.url}")
+    private String gatewayUrl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,7 +53,7 @@ public class SecurityConfig {
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(serverUrl));
+        configuration.setAllowedOrigins(List.of(gatewayUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
         configuration.setAllowedHeaders(List.of("Authorization", "*"));
         configuration.setAllowCredentials(true);

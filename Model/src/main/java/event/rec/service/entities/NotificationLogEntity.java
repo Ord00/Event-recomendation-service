@@ -23,7 +23,11 @@ public class NotificationLogEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_event")
+    private EventEntity idEvent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
-    private UserEntity idUser;
+    private CommonUserEntity idUser;
 
 }

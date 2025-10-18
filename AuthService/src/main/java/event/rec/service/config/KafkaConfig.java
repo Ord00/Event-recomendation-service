@@ -1,6 +1,9 @@
 package event.rec.service.config;
 
+import event.rec.service.requests.AdminRegistrationRequest;
+import event.rec.service.requests.CommonUserRegistrationRequest;
 import event.rec.service.requests.JwtRequest;
+import event.rec.service.requests.OrganizerRegistrationRequest;
 import event.rec.service.requests.RegistrationRequest;
 import event.rec.service.responses.JwtResponse;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -10,7 +13,10 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.*;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
@@ -32,9 +38,10 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, RegistrationRequest> registrationRequestProducerFactory() {
+    public <T extends RegistrationRequest> ProducerFactory<String, T> registrationRequestProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
+
 
     @Bean
     public ConsumerFactory<String, JwtResponse> jwtResponseConsumerFactory() {
@@ -96,8 +103,8 @@ public class KafkaConfig {
     private String registerCommonResponseTopic;
 
     @Bean
-    public ReplyingKafkaTemplate<String, RegistrationRequest, Boolean> registerCommonTemplate(
-            ProducerFactory<String, RegistrationRequest> registrationRequestProducerFactory,
+    public ReplyingKafkaTemplate<String, CommonUserRegistrationRequest, Boolean> registerCommonTemplate(
+            ProducerFactory<String, CommonUserRegistrationRequest> registrationRequestProducerFactory,
             ConsumerFactory<String, Boolean> booleanConsumerFactory) {
 
         ConcurrentMessageListenerContainer<String, Boolean> replyContainer =
@@ -105,6 +112,44 @@ public class KafkaConfig {
 
         return new ReplyingKafkaTemplate<>(registrationRequestProducerFactory, replyContainer) {{
             setDefaultTopic(registerCommonRequestTopic);
+        }};
+    }
+
+    @Value("${kafka.register.organizer.request}")
+    private String registerOrganizerRequestTopic;
+
+    @Value("${kafka.register.organizer.response}")
+    private String registerOrganizerResponseTopic;
+
+    @Bean
+    public ReplyingKafkaTemplate<String, OrganizerRegistrationRequest, Boolean> registerOrganizerTemplate(
+            ProducerFactory<String, OrganizerRegistrationRequest> registrationRequestProducerFactory,
+            ConsumerFactory<String, Boolean> booleanConsumerFactory) {
+
+        ConcurrentMessageListenerContainer<String, Boolean> replyContainer =
+                replyContainer(booleanConsumerFactory, "register-group", registerOrganizerResponseTopic);
+
+        return new ReplyingKafkaTemplate<>(registrationRequestProducerFactory, replyContainer) {{
+            setDefaultTopic(registerOrganizerRequestTopic);
+        }};
+    }
+
+    @Value("${kafka.register.admin.request}")
+    private String registerAdminRequestTopic;
+
+    @Value("${kafka.register.admin.response}")
+    private String registerAdminResponseTopic;
+
+    @Bean
+    public ReplyingKafkaTemplate<String, AdminRegistrationRequest, Boolean> registerAdminTemplate(
+            ProducerFactory<String, AdminRegistrationRequest> registrationRequestProducerFactory,
+            ConsumerFactory<String, Boolean> booleanConsumerFactory) {
+
+        ConcurrentMessageListenerContainer<String, Boolean> replyContainer =
+                replyContainer(booleanConsumerFactory, "register-group", registerAdminResponseTopic);
+
+        return new ReplyingKafkaTemplate<>(registrationRequestProducerFactory, replyContainer) {{
+            setDefaultTopic(registerAdminRequestTopic);
         }};
     }
 
