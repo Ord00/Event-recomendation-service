@@ -37,11 +37,12 @@
 * Spring Boot
 * Spring Security
 * JWT
-* ElasticSearch
+* ApiGateway
 * Kafka
 * Redis
 * PostgreSQL
 * Docker
 ***
 # База данных
-![image](https://github.com/user-attachments/assets/4584d4b1-2e7b-4282-aa5c-09446e159cc2)
+<img width="1109" height="614" alt="image" src="https://github.com/user-attachments/assets/b08a6050-d94d-4be4-8b30-35073e725a20" />
+
