@@ -3,7 +3,7 @@ version = "0.0.1-SNAPSHOT"
 
 dependencies {
     implementation(project(":Model"))
-    implementation(project(":security-core"))
+    implementation(project(":SecurityCore"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

@@ -38,13 +38,13 @@ public class EventController {
         }
     }
 
-    @DeleteMapping("/delete/{eventId}")
+    @DeleteMapping("/{eventId}")
     public ResponseEntity<?> deleteEvent(@PathVariable Long eventId) {
         eventService.deleteEvent(eventId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{eventId}")
+    @PutMapping("/{eventId}")
     public ResponseEntity<?> updateEvent(@PathVariable Long eventId, @RequestBody EventDto event) {
         try {
             return ResponseEntity.ok(eventService.updateEvent(eventId, event));

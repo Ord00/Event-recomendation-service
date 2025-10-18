@@ -32,7 +32,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppError"
 
-  /delete/{eventId}:
+  /{eventId}:
     delete:
       summary: Удалить событие
       tags:
@@ -51,7 +51,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppError"
 
-  /update/{eventId}:
     put:
       summary: Изменить данные события
       tags:
