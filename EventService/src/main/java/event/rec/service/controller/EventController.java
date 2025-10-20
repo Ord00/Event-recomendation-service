@@ -6,6 +6,7 @@ import event.rec.service.requests.SearchEventRequest;
 import event.rec.service.requests.ViewEventNearbyRequest;
 import event.rec.service.requests.ViewFavouriteRequest;
 import event.rec.service.service.EventService;
+import event.rec.service.service.EventSubscriptionService;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.common.errors.TimeoutException;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
     private final EventService eventService;
+    private final EventSubscriptionService eventSubscriptionService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createEvent(@RequestBody EventDto event) {
         try {
+
             return ResponseEntity.ok(eventService.createEvent(event));
 
         } catch (TimeoutException e) {
@@ -47,6 +50,7 @@ public class EventController {
     @PutMapping("/{eventId}")
     public ResponseEntity<?> updateEvent(@PathVariable Long eventId, @RequestBody EventDto event) {
         try {
+
             return ResponseEntity.ok(eventService.updateEvent(eventId, event));
 
         } catch (TimeoutException e) {
@@ -60,7 +64,16 @@ public class EventController {
 
     @PostMapping("/add/to/favourite")
     public ResponseEntity<?> addToFavourite(@RequestBody EventSubscriptionDto eventSubscription) {
-        return null;
+        try {
+
+            eventSubscriptionService.addToFavourite(eventSubscription);
+            return ResponseEntity.noContent().build();
+
+        } catch (TimeoutException e) {
+            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/view/favourite")
@@ -77,5 +90,4 @@ public class EventController {
     public ResponseEntity<?> viewNearby(@RequestBody ViewEventNearbyRequest request) {
         return null;
     }
-
 }

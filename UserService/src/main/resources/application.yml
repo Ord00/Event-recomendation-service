@@ -33,8 +33,15 @@ kafka:
     find:
       by:
         id:
-          request: "FindByIdReq"
-          response: "FindByIdResp"
+          common:
+            request: "FindByIdCommonUserReq"
+            response: "FindByIdCommonUserResp"
+          organizer:
+            request: "FindByIdOrganizerReq"
+            response: "FindByIdOrganizerResp"
+          admin:
+            request: "FindByIdAdminReq"
+            response: "FindByIdAdminResp"
 
 server:
   port: 8084

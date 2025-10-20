@@ -26,9 +26,9 @@ public class EventService {
     private final VenueService venueService;
 
     private final ReplyingKafkaTemplate<String, Long, OrganizerEntity> findOrganizerTemplate;
-    @Value("${kafka.topics.find.by.id.request}")
+    @Value("${kafka.topics.find.by.id.organizer.request}")
     private String findOrganizerRequestTopic;
-    @Value("${kafka.topics.find.by.id.response}")
+    @Value("${kafka.topics.find.by.id.organizer.response}")
     private String findOrganizerReplyTopic;
 
     public EventEntity createEvent(EventDto event) throws ExecutionException, InterruptedException {
@@ -88,5 +88,9 @@ public class EventService {
         entity.setId(eventId);
 
         return eventRepository.save(entity);
+    }
+
+    public EventEntity findById(Long id) {
+        return eventRepository.findById(id).orElse(null);
     }
 }
