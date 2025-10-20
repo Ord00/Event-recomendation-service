@@ -30,11 +30,10 @@ public class EventSubscriptionService {
     @Value("${kafka.topics.find.by.id.common.response}")
     private String findUserResponseTopic;
 
-    public void addToFavourite(EventSubscriptionDto eventSubscription) throws ExecutionException, InterruptedException {
-
+    private RequestReplyFuture<String, Long, CommonUserEntity> getUser(Long userId) {
         ProducerRecord<String, Long> record = new ProducerRecord<>(
                 findUserRequestTopic,
-                eventSubscription.userId()
+                userId
         );
 
         record.headers().add(new RecordHeader(
@@ -42,13 +41,27 @@ public class EventSubscriptionService {
                 findUserResponseTopic.getBytes()
         ));
 
-        RequestReplyFuture<String, Long, CommonUserEntity> future =
-                findUserTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+        return findUserTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+    }
+
+    public void addToFavourite(EventSubscriptionDto eventSubscription) throws ExecutionException, InterruptedException {
+
+        RequestReplyFuture<String, Long, CommonUserEntity> future = getUser(eventSubscription.userId());
 
         repository.save(EventSubscriptionDtoToEntity(
                 future.get().value(),
                 eventService.findById(eventSubscription.eventId()),
                 eventSubscription
+        ));
+    }
+
+    public void deleteFromFavourite(Long userId, Long eventId) throws ExecutionException, InterruptedException {
+
+        RequestReplyFuture<String, Long, CommonUserEntity> future = getUser(userId);
+
+        repository.delete(EventSubscriptionDtoToEntity(
+                future.get().value(),
+                eventService.findById(eventId)
         ));
     }
 }

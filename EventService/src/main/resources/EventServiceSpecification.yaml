@@ -75,7 +75,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppError"
 
-  /add/to/favourite:
+  /favourite:
     post:
       summary: Добавить в избранное
       tags:
@@ -99,7 +99,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppError"
-  /view/favourite:
     get:
       summary: Отобразить избранные события
       tags:
@@ -125,6 +124,25 @@ paths:
                 $ref: "#/components/schemas/ViewFavouriteResponse"
         '401':
           $ref: "#/components/responses/Unauthorized"
+
+  /favourite/{userId}/{eventId}:
+    delete:
+      summary: Удалить из избранного
+      tags:
+        - Changing Events
+      responses:
+        '200':
+          description: Успешный вход в систему
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteFromFavouriteResponse"
+        '401':
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppError"
 
   /search:
     get:
@@ -340,6 +358,19 @@ components:
           type: string
           format: date-time
           example: "2023-01-01T12:00:00Z"
+
+    DeleteFromFavouriteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Событие успешно удалено из избранного"
+        deletedEventId:
+          type: integer
+          example: 123
 
     ViewFavouriteResponse:
       type: array

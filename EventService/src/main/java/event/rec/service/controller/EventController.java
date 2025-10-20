@@ -62,7 +62,7 @@ public class EventController {
         }
     }
 
-    @PostMapping("/add/to/favourite")
+    @PostMapping("/favourite")
     public ResponseEntity<?> addToFavourite(@RequestBody EventSubscriptionDto eventSubscription) {
         try {
 
@@ -76,7 +76,21 @@ public class EventController {
         }
     }
 
-    @GetMapping("/view/favourite")
+    @DeleteMapping("/favourite/{userId}/{eventId}")
+    public ResponseEntity<?> deleteFromFavourite(@PathVariable Long userId, @PathVariable Long eventId) {
+        try {
+
+            eventSubscriptionService.deleteFromFavourite(userId, eventId);
+            return ResponseEntity.noContent().build();
+
+        } catch (TimeoutException e) {
+            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/favourite")
     public ResponseEntity<?> viewFavourite(@RequestBody ViewFavouriteRequest request) {
         return null;
     }

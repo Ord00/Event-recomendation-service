@@ -10,12 +10,19 @@ public final class EventSubscriptionMapper {
     private static final String status = "ACTIVE";
 
     public static EventSubscriptionEntity EventSubscriptionDtoToEntity(CommonUserEntity commonUserEntity,
-                                                                       EventEntity eventEntity,
-                                                                       EventSubscriptionDto eventSubscription) {
+                                                                       EventEntity eventEntity) {
 
         EventSubscriptionEntity eventSubscriptionEntity = new EventSubscriptionEntity();
         eventSubscriptionEntity.setIdUser(commonUserEntity);
         eventSubscriptionEntity.setIdEvent(eventEntity);
+        return eventSubscriptionEntity;
+    }
+
+    public static EventSubscriptionEntity EventSubscriptionDtoToEntity(CommonUserEntity commonUserEntity,
+                                                                       EventEntity eventEntity,
+                                                                       EventSubscriptionDto eventSubscription) {
+
+        EventSubscriptionEntity eventSubscriptionEntity = EventSubscriptionDtoToEntity(commonUserEntity, eventEntity);
         eventSubscriptionEntity.setStatus(status);
         eventSubscriptionEntity.setNotifyTime(eventSubscription.notifyTime());
         return eventSubscriptionEntity;
