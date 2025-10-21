@@ -18,6 +18,7 @@ public class OrganizerService {
 
     @Transactional
     public void createOrganizer(UserEntity userEntity, OrganizerDto organizerDTO) {
+
         OrganizerEntity organizerEntity = organizerDTOToEntity(organizerDTO);
         organizerEntity.setUserEntity(userEntity);
         organizerRepository.save(organizerEntity);

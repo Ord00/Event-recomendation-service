@@ -18,6 +18,7 @@ public class AdminService {
 
     @Transactional
     public void createAdmin(UserEntity userEntity, AdminDto adminDTO) {
+
         AdminEntity adminEntity = adminDTOToEntity(adminDTO);
         adminEntity.setUserEntity(userEntity);
         adminRepository.save(adminEntity);

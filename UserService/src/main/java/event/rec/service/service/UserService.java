@@ -47,6 +47,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserEntity createNewUser(UserDto userDTO) {
+
         UserDto userWithPasswordDTO = new UserDto(
                 userDTO.login(),
                 passwordEncoder.encode(userDTO.password()));

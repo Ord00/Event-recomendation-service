@@ -18,6 +18,7 @@ public class CommonUserService {
 
     @Transactional
     public void createCommonUser(UserEntity userEntity, CommonUserDto commonUserDTO) {
+
         CommonUserEntity commonUserEntity = commonUserDTOToEntity(commonUserDTO);
         commonUserEntity.setUserEntity(userEntity);
         commonUserRepository.save(commonUserEntity);
