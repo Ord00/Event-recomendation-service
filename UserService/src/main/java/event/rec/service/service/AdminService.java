@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static event.rec.service.mappers.AdminMapper.AdminDTOToEntity;
+import static event.rec.service.mappers.AdminMapper.adminDTOToEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public class AdminService {
 
     @Transactional
     public void createAdmin(UserEntity userEntity, AdminDto adminDTO) {
-        AdminEntity adminEntity = AdminDTOToEntity(adminDTO);
+        AdminEntity adminEntity = adminDTOToEntity(adminDTO);
         adminEntity.setUserEntity(userEntity);
         adminRepository.save(adminEntity);
     }

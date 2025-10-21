@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static event.rec.service.mappers.UserMapper.UserDTOToUserEntity;
+import static event.rec.service.mappers.UserMapper.userDTOToUserEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         UserDto userWithPasswordDTO = new UserDto(
                 userDTO.login(),
                 passwordEncoder.encode(userDTO.password()));
-        UserEntity userEntity = UserDTOToUserEntity(userWithPasswordDTO);
+        UserEntity userEntity = userDTOToUserEntity(userWithPasswordDTO);
         return userRepository.save(userEntity);
     }
 

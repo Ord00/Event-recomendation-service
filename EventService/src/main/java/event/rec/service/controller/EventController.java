@@ -92,7 +92,17 @@ public class EventController {
 
     @GetMapping("/favourite")
     public ResponseEntity<?> viewFavourite(@RequestBody ViewFavouriteRequest request) {
-        return null;
+        try {
+
+            return ResponseEntity.ok(eventSubscriptionService.viewFavourites(request));
+
+        } catch (TimeoutException e) {
+            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/search")

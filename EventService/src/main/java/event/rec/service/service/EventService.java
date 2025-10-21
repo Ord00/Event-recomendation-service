@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
-import static event.rec.service.mappers.EventMapper.EventDtoToEventEntity;
+import static event.rec.service.mappers.EventMapper.eventDtoToEventEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class EventService {
         RequestReplyFuture<String, Long, OrganizerEntity> future =
                 findOrganizerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
 
-        return eventRepository.save(EventDtoToEventEntity(
+        return eventRepository.save(eventDtoToEventEntity(
                 future.get().value(),
                 venueService.findById(event.venueId()),
                 event));
@@ -81,7 +81,7 @@ public class EventService {
         RequestReplyFuture<String, Long, OrganizerEntity> future =
                 findOrganizerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
 
-        EventEntity entity = EventDtoToEventEntity(
+        EventEntity entity = eventDtoToEventEntity(
                 future.get().value(),
                 venueService.findById(event.venueId()),
                 event);

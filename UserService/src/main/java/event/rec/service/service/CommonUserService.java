@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static event.rec.service.mappers.CommonUserMapper.CommonUserDTOToEntity;
+import static event.rec.service.mappers.CommonUserMapper.commonUserDTOToEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public class CommonUserService {
 
     @Transactional
     public void createCommonUser(UserEntity userEntity, CommonUserDto commonUserDTO) {
-        CommonUserEntity commonUserEntity = CommonUserDTOToEntity(commonUserDTO);
+        CommonUserEntity commonUserEntity = commonUserDTOToEntity(commonUserDTO);
         commonUserEntity.setUserEntity(userEntity);
         commonUserRepository.save(commonUserEntity);
     }

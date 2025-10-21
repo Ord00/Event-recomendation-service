@@ -7,7 +7,7 @@ import event.rec.service.entities.VenueEntity;
 
 public final class EventMapper {
 
-    public static EventEntity EventDtoToEventEntity(OrganizerEntity organizerEntity,
+    public static EventEntity eventDtoToEventEntity(OrganizerEntity organizerEntity,
                                                     VenueEntity venueEntity,
                                                     EventDto event) {
         EventEntity eventEntity = new EventEntity();
