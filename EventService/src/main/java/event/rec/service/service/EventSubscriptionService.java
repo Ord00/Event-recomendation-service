@@ -31,6 +31,7 @@ public class EventSubscriptionService {
     private String findUserResponseTopic;
 
     private RequestReplyFuture<String, Long, CommonUserEntity> getUser(Long userId) {
+
         ProducerRecord<String, Long> record = new ProducerRecord<>(
                 findUserRequestTopic,
                 userId
