@@ -1,6 +1,6 @@
 package event.rec.service.entities;
 
-import event.rec.service.UserHolder;
+import event.rec.service.interfaces.UserHolder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

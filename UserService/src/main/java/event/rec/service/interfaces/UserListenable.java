@@ -1,6 +1,5 @@
 package event.rec.service.interfaces;
 
-import event.rec.service.UserHolder;
 import event.rec.service.dto.UserDto;
 import event.rec.service.entities.UserEntity;
 import event.rec.service.requests.RegistrationRequest;

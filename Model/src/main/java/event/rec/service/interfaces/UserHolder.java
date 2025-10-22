@@ -1,4 +1,4 @@
-package event.rec.service;
+package event.rec.service.interfaces;
 
 import event.rec.service.entities.UserEntity;
 
