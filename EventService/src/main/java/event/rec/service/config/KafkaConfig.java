@@ -79,10 +79,10 @@ public class KafkaConfig {
         }};
     }
 
-    @Value("${kafka.topics.find.by.id.request}")
+    @Value("${kafka.topics.find.by.id.common.request}")
     private String findCommonUserRequestTopic;
 
-    @Value("${kafka.topics.find.by.id.response}")
+    @Value("${kafka.topics.find.by.id.common.response}")
     private String findCommonUserReplyTopic;
 
     @Bean
