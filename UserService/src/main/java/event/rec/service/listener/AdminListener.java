@@ -13,6 +13,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
+import static event.rec.service.utils.UserRegistrar.registerUser;
+
 @Component
 @RequiredArgsConstructor
 public class AdminListener implements UserListenable<AdminRegistrationRequest> {

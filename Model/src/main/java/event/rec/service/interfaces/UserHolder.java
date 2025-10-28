@@ -10,5 +10,4 @@ public interface UserHolder {
     default Long getId() {
         return getUserEntity() != null ? getUserEntity().getId() : null;
     }
-
 }
