@@ -112,6 +112,14 @@ public class EventController {
 
     @GetMapping("/view/nearby")
     public ResponseEntity<?> viewNearby(@RequestBody ViewEventNearbyRequest request) {
-        return null;
+        try {
+
+            return ResponseEntity.ok(eventService.viewEventNearby(request));
+
+        } catch (TimeoutException e) {
+            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

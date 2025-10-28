@@ -3,7 +3,10 @@ package event.rec.service.service;
 import event.rec.service.dto.EventDto;
 import event.rec.service.entities.EventEntity;
 import event.rec.service.entities.OrganizerEntity;
+import event.rec.service.mappers.EventMapper;
 import event.rec.service.repository.EventRepository;
+import event.rec.service.requests.ViewEventNearbyRequest;
+import event.rec.service.responses.EventResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -14,6 +17,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static event.rec.service.mappers.EventMapper.eventDtoToEventEntity;
@@ -24,6 +28,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final VenueService venueService;
+    private final CategoryService categoryService;
 
     private final ReplyingKafkaTemplate<String, Long, OrganizerEntity> findOrganizerTemplate;
     @Value("${kafka.topics.find.by.id.organizer.request}")
@@ -49,6 +54,7 @@ public class EventService {
         return eventRepository.save(eventDtoToEventEntity(
                 future.get().value(),
                 venueService.findById(event.venueId()),
+                event.categoryIds().stream().map(categoryService::findById).toList(),
                 event));
     }
 
@@ -84,6 +90,7 @@ public class EventService {
         EventEntity entity = eventDtoToEventEntity(
                 future.get().value(),
                 venueService.findById(event.venueId()),
+                event.categoryIds().stream().map(categoryService::findById).toList(),
                 event);
         entity.setId(eventId);
 
@@ -92,5 +99,15 @@ public class EventService {
 
     public EventEntity findById(Long id) {
         return eventRepository.findById(id).orElse(null);
+    }
+
+    public List<EventResponse> viewEventNearby(ViewEventNearbyRequest request) {
+
+        return eventRepository.findEventNearby(request.categoryIds(),
+                        request.interval(),
+                        request.location(),
+                        request.radius()).stream()
+                .map(EventMapper::eventEntityToResponse)
+                .toList();
     }
 }

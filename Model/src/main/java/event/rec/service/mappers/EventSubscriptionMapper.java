@@ -6,9 +6,7 @@ import event.rec.service.entities.EventEntity;
 import event.rec.service.entities.EventSubscriptionEntity;
 import event.rec.service.responses.EventSubscriptionResponse;
 
-import static event.rec.service.mappers.CategoryMapper.categoryEntityToDto;
-import static event.rec.service.mappers.OrganizerMapper.organizerEntityToDTO;
-import static event.rec.service.mappers.VenueMapper.venueEntityToDto;
+import static event.rec.service.mappers.EventMapper.eventEntityToResponse;
 
 public final class EventSubscriptionMapper {
 
@@ -33,20 +31,9 @@ public final class EventSubscriptionMapper {
         return eventSubscriptionEntity;
     }
 
-    public static EventSubscriptionResponse eventSubscriptionEntityToResponse(EventSubscriptionEntity eventSubscription) {
-        EventEntity event = eventSubscription.getIdEvent();
-        return new EventSubscriptionResponse(event.getTitle(),
-                event.getDescription(),
-                event.getStartTime(),
-                event.getEndTime(),
-                event.getRecurrence(),
-                event.getStatus(),
-                organizerEntityToDTO(event.getIdOrganizer()),
-                venueEntityToDto(event.getIdVenue()),
-                event.getCategoryEvents()
-                        .stream()
-                        .map(categoryEvent -> categoryEntityToDto(categoryEvent.getIdCategory()))
-                        .toList(),
+    public static EventSubscriptionResponse eventSubscriptionEntityToResponse(
+            EventSubscriptionEntity eventSubscription) {
+        return new EventSubscriptionResponse(eventEntityToResponse(eventSubscription.getIdEvent()),
                 eventSubscription.getStatus(),
                 eventSubscription.getNotifyTime()
                 );
