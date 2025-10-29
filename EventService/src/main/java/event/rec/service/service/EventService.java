@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static event.rec.service.mappers.EventMapper.eventDtoToEventEntity;
-import static event.rec.service.utils.RegexPatternBuilder.buildRegexPattern;
+import static event.rec.service.utils.RegexPatternBuilder.buildSearchEventPattern;
 
 @Service
 @RequiredArgsConstructor
@@ -106,7 +106,7 @@ public class EventService {
 
     public List<EventEntity> searchEvents(SearchEventRequest request) {
 
-        return eventRepository.searchEvent(buildRegexPattern(request.query()),
+        return eventRepository.searchEvent(buildSearchEventPattern(request.query()),
                 request.categoryIds(),
                 request.from(),
                 request.to(),

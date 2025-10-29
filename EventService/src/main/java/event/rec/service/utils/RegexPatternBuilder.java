@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class RegexPatternBuilder {
 
-    public static String buildRegexPattern(String request) {
+    public static String buildSearchEventPattern(String request) {
 
         if (request == null || request.trim().isEmpty()) {
             return ".*";
