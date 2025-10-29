@@ -32,7 +32,7 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
             "JOIN FETCH ce.idCategory c " +
             "JOIN FETCH e.idVenue v " +
             "WHERE e.status = 'PUBLISHED' " +
-            "AND FUNCTION('REGEXP_LIKE', e.title, :regexPattern) " +
+            "AND FUNCTION('regexp_match', e.title, :regexPattern) IS NOT NULL " +
             "AND :from <= e.startTime AND e.endTime <= :to " +
             "AND c.id IN :categoryIds")
     List<EventEntity> searchEvent(String regexPattern,
