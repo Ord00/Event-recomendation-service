@@ -5,12 +5,14 @@ import event.rec.service.entities.EventEntity;
 import event.rec.service.entities.OrganizerEntity;
 import event.rec.service.mappers.EventMapper;
 import event.rec.service.repository.EventRepository;
+import event.rec.service.requests.SearchEventRequest;
 import event.rec.service.requests.ViewEventNearbyRequest;
 import event.rec.service.responses.EventResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static event.rec.service.mappers.EventMapper.eventDtoToEventEntity;
+import static event.rec.service.utils.RegexPatternBuilder.buildRegexPattern;
 
 @Service
 @RequiredArgsConstructor
@@ -99,6 +102,16 @@ public class EventService {
 
     public EventEntity findById(Long id) {
         return eventRepository.findById(id).orElse(null);
+    }
+
+    public List<EventEntity> searchEvents(SearchEventRequest request) {
+
+        return eventRepository.searchEvent(buildRegexPattern(request.query()),
+                request.categoryIds(),
+                request.from(),
+                request.to(),
+                PageRequest.of(request.page(), request.size())
+        );
     }
 
     public List<EventResponse> viewEventNearby(ViewEventNearbyRequest request) {
