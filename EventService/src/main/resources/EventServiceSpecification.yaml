@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: Сервис событий
-  description: Сервис событий
+  title: РЎРµСЂРІРёСЃ СЃРѕР±С‹С‚РёР№
+  description: РЎРµСЂРІРёСЃ СЃРѕР±С‹С‚РёР№
   version: 1.0.0
 servers:
   - url: http://localhost:8081/event/
@@ -9,7 +9,7 @@ servers:
 paths:
   /create:
     post:
-      summary: Создать мероприятие
+      summary: РЎРѕР·РґР°С‚СЊ РјРµСЂРѕРїСЂРёСЏС‚РёРµ
       tags:
         - Changing Events
       requestBody:
@@ -20,13 +20,13 @@ paths:
               $ref: "#/components/schemas/CreateEventRequest"
       responses:
         '200':
-          description: Успешное создание мероприятия
+          description: РЈСЃРїРµС€РЅРѕРµ СЃРѕР·РґР°РЅРёРµ РјРµСЂРѕРїСЂРёСЏС‚РёСЏ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateEventResponse"
         '401':
-          description: Неверные данные
+          description: РќРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ
           content:
             application/json:
               schema:
@@ -34,25 +34,25 @@ paths:
 
   /{eventId}:
     delete:
-      summary: Удалить событие
+      summary: РЈРґР°Р»РёС‚СЊ СЃРѕР±С‹С‚РёРµ
       tags:
         - Changing Events
       responses:
         '200':
-          description: Успешный вход в систему
+          description: РЈСЃРїРµС€РЅС‹Р№ РІС…РѕРґ РІ СЃРёСЃС‚РµРјСѓ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeleteEventResponse"
         '401':
-          description: Неверный логин или пароль
+          description: РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppError"
 
     put:
-      summary: Изменить данные события
+      summary: РР·РјРµРЅРёС‚СЊ РґР°РЅРЅС‹Рµ СЃРѕР±С‹С‚РёСЏ
       tags:
         - Changing Events
       requestBody:
@@ -63,13 +63,13 @@ paths:
               $ref: "#/components/schemas/UpdateEventRequest"
       responses:
         '200':
-          description: Успешное обновление данных события
+          description: РЈСЃРїРµС€РЅРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… СЃРѕР±С‹С‚РёСЏ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UpdateEventResponse"
         '401':
-          description: Неверные данные события
+          description: РќРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ СЃРѕР±С‹С‚РёСЏ
           content:
             application/json:
               schema:
@@ -77,7 +77,7 @@ paths:
 
   /favourite:
     post:
-      summary: Добавить в избранное
+      summary: Р”РѕР±Р°РІРёС‚СЊ РІ РёР·Р±СЂР°РЅРЅРѕРµ
       tags:
         - Changing Events
       requestBody:
@@ -88,19 +88,19 @@ paths:
               $ref: "#/components/schemas/AddToFavouriteRequest"
       responses:
         '200':
-          description: Успешное добавление события в избранное
+          description: РЈСЃРїРµС€РЅРѕРµ РґРѕР±Р°РІР»РµРЅРёРµ СЃРѕР±С‹С‚РёСЏ РІ РёР·Р±СЂР°РЅРЅРѕРµ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AddToFavouriteResponse"
         '401':
-          description: Неверный логин или пароль
+          description: РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppError"
     get:
-      summary: Отобразить избранные события
+      summary: РћС‚РѕР±СЂР°Р·РёС‚СЊ РёР·Р±СЂР°РЅРЅС‹Рµ СЃРѕР±С‹С‚РёСЏ
       tags:
         - View Events
       parameters:
@@ -117,7 +117,7 @@ paths:
           example: 10
       responses:
         '200':
-          description: Успешный вывод избранных событий
+          description: РЈСЃРїРµС€РЅС‹Р№ РІС‹РІРѕРґ РёР·Р±СЂР°РЅРЅС‹С… СЃРѕР±С‹С‚РёР№
           content:
             application/json:
               schema:
@@ -127,18 +127,18 @@ paths:
 
   /favourite/{userId}/{eventId}:
     delete:
-      summary: Удалить из избранного
+      summary: РЈРґР°Р»РёС‚СЊ РёР· РёР·Р±СЂР°РЅРЅРѕРіРѕ
       tags:
         - Changing Events
       responses:
         '200':
-          description: Успешный вход в систему
+          description: РЈСЃРїРµС€РЅС‹Р№ РІС…РѕРґ РІ СЃРёСЃС‚РµРјСѓ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DeleteFromFavouriteResponse"
         '401':
-          description: Неверный логин или пароль
+          description: РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ
           content:
             application/json:
               schema:
@@ -146,7 +146,7 @@ paths:
 
   /search:
     get:
-      summary: Найти события по заданным условиям
+      summary: РќР°Р№С‚Рё СЃРѕР±С‹С‚РёСЏ РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
       tags:
         - View Events
       parameters:
@@ -171,7 +171,7 @@ paths:
           example: "2024-12-31T23:59:59Z"
       responses:
         '200':
-          description: Успешно найдены события
+          description: РЈСЃРїРµС€РЅРѕ РЅР°Р№РґРµРЅС‹ СЃРѕР±С‹С‚РёСЏ
           content:
             application/json:
               schema:
@@ -181,7 +181,7 @@ paths:
 
   /view/nearby:
     get:
-      summary: Найти события поблизости
+      summary: РќР°Р№С‚Рё СЃРѕР±С‹С‚РёСЏ РїРѕР±Р»РёР·РѕСЃС‚Рё
       tags:
         - View Events
       parameters:
@@ -219,7 +219,7 @@ paths:
           example: 10.0
       responses:
         '200':
-          description: Успешно найдены события поблизости
+          description: РЈСЃРїРµС€РЅРѕ РЅР°Р№РґРµРЅС‹ СЃРѕР±С‹С‚РёСЏ РїРѕР±Р»РёР·РѕСЃС‚Рё
           content:
             application/json:
               schema:
@@ -231,7 +231,7 @@ paths:
 components:
   responses:
     Unauthorized:
-      description: Неавторизованный доступ
+      description: РќРµР°РІС‚РѕСЂРёР·РѕРІР°РЅРЅС‹Р№ РґРѕСЃС‚СѓРї
       content:
         application/json:
           schema:
@@ -255,10 +255,10 @@ components:
       properties:
         title:
           type: string
-          example: "Концерт"
+          example: "РљРѕРЅС†РµСЂС‚"
         description:
           type: string
-          example: "Группа 'Кино' в Москве"
+          example: "Р“СЂСѓРїРїР° 'РљРёРЅРѕ' РІ РњРѕСЃРєРІРµ"
         startTime:
           type: string
           format: date-time
@@ -293,10 +293,10 @@ components:
           example: 123
         title:
           type: string
-          example: "Концерт"
+          example: "РљРѕРЅС†РµСЂС‚"
         organizerName:
           type: string
-          example: "Рок-клуб"
+          example: "Р РѕРє-РєР»СѓР±"
         startTime:
           type: string
           format: date-time
@@ -310,7 +310,7 @@ components:
           example: true
         message:
           type: string
-          example: "Событие успешно удалено"
+          example: "РЎРѕР±С‹С‚РёРµ СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅРѕ"
         deletedEventId:
           type: integer
           example: 123
@@ -320,10 +320,10 @@ components:
       properties:
         title:
           type: string
-          example: "Обновленный концерт"
+          example: "РћР±РЅРѕРІР»РµРЅРЅС‹Р№ РєРѕРЅС†РµСЂС‚"
         description:
           type: string
-          example: "Группа 'Кино' в Москве - обновленное описание"
+          example: "Р“СЂСѓРїРїР° 'РљРёРЅРѕ' РІ РњРѕСЃРєРІРµ - РѕР±РЅРѕРІР»РµРЅРЅРѕРµ РѕРїРёСЃР°РЅРёРµ"
         startTime:
           type: string
           format: date-time
@@ -350,7 +350,7 @@ components:
           example: 123
         title:
           type: string
-          example: "Обновленный концерт"
+          example: "РћР±РЅРѕРІР»РµРЅРЅС‹Р№ РєРѕРЅС†РµСЂС‚"
         status:
           type: string
           example: "PUBLISHED"
@@ -367,7 +367,7 @@ components:
           example: true
         message:
           type: string
-          example: "Событие успешно удалено из избранного"
+          example: "РЎРѕР±С‹С‚РёРµ СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅРѕ РёР· РёР·Р±СЂР°РЅРЅРѕРіРѕ"
         deletedEventId:
           type: integer
           example: 123
@@ -382,14 +382,14 @@ components:
             example: 123
           title:
             type: string
-            example: "Концерт"
+            example: "РљРѕРЅС†РµСЂС‚"
           startTime:
             type: string
             format: date-time
             example: "2024-12-31T20:00:00Z"
           organizerName:
             type: string
-            example: "Рок-клуб"
+            example: "Р РѕРє-РєР»СѓР±"
 
     SearchEventsResponse:
       type: array
@@ -445,10 +445,10 @@ components:
           example: 123
         title:
           type: string
-          example: "Концерт"
+          example: "РљРѕРЅС†РµСЂС‚"
         description:
           type: string
-          example: "Группа 'Кино' в Москве"
+          example: "Р“СЂСѓРїРїР° 'РљРёРЅРѕ' РІ РњРѕСЃРєРІРµ"
         startTime:
           type: string
           format: date-time
@@ -465,7 +465,7 @@ components:
               example: 1
             address:
               type: string
-              example: "Москва, Красная площадь"
+              example: "РњРѕСЃРєРІР°, РљСЂР°СЃРЅР°СЏ РїР»РѕС‰Р°РґСЊ"
         organizer:
           type: object
           properties:
@@ -474,7 +474,7 @@ components:
               example: 1
             name:
               type: string
-              example: "Рок-клуб"
+              example: "Р РѕРє-РєР»СѓР±"
         categories:
           type: array
           items:
@@ -485,7 +485,7 @@ components:
                 example: 1
               name:
                 type: string
-                example: "Музыка"
+                example: "РњСѓР·С‹РєР°"
 
     AppError:
       type: object
@@ -499,7 +499,7 @@ components:
           example: 400
         message:
           type: string
-          example: "Пользователь уже существует"
+          example: "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"
         timestamp:
           type: string
           format: date-time
