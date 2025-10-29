@@ -4,7 +4,7 @@ info:
   description: Сервис событий
   version: 1.0.0
 servers:
-  - url: http://localhost:8081/event/
+  - url: http://localhost:8081/event
     description: Event service
 paths:
   /create:
@@ -151,6 +151,10 @@ paths:
         - View Events
       parameters:
         - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
           name: categoryIds
           schema:
             type: array
@@ -169,6 +173,16 @@ paths:
             type: string
             format: date-time
           example: "2024-12-31T23:59:59Z"
+        - in: query
+          name: page
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: size
+          schema:
+            type: integer
+            example: 10
       responses:
         '200':
           description: Успешно найдены события

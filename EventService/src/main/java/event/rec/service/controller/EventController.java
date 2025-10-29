@@ -8,11 +8,13 @@ import event.rec.service.requests.ViewFavouriteRequest;
 import event.rec.service.service.EventService;
 import event.rec.service.service.EventSubscriptionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.TimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/event")
@@ -91,7 +94,7 @@ public class EventController {
     }
 
     @GetMapping("/favourite")
-    public ResponseEntity<?> viewFavourite(@RequestBody ViewFavouriteRequest request) {
+    public ResponseEntity<?> viewFavourite(@ModelAttribute ViewFavouriteRequest request) {
         try {
 
             return ResponseEntity.ok(eventSubscriptionService.viewFavourites(request));
@@ -106,7 +109,8 @@ public class EventController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestBody SearchEventRequest request) {
+    public ResponseEntity<?> search(@ModelAttribute SearchEventRequest request) {
+        log.info("Started searching for events");
         try {
 
             return ResponseEntity.ok(eventService.searchEvents(request));
@@ -119,7 +123,7 @@ public class EventController {
     }
 
     @GetMapping("/view/nearby")
-    public ResponseEntity<?> viewNearby(@RequestBody ViewEventNearbyRequest request) {
+    public ResponseEntity<?> viewNearby(@ModelAttribute ViewEventNearbyRequest request) {
         try {
 
             return ResponseEntity.ok(eventService.viewEventNearby(request));
