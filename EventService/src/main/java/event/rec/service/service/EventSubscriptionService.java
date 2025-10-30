@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
-@RequiredArgsConstructor
 public class EventSubscriptionService {
 
     private final EventSubscriptionRepository repository;
@@ -32,13 +32,24 @@ public class EventSubscriptionService {
 
     private final EntityManager entityManager;
 
-    @Resource(name = "findCommonUserTemplate")
     private final ReplyingKafkaTemplate<String, String, Long> findUserTemplate;
 
     @Value("${kafka.topics.find.by.id.common.request}")
     private String findUserRequestTopic;
     @Value("${kafka.topics.find.by.id.common.response}")
     private String findUserResponseTopic;
+
+    public EventSubscriptionService(EventSubscriptionRepository repository,
+                                    EventService eventService,
+                                    EntityManager entityManager,
+                                    @Qualifier("findCommonUserTemplate")
+                                    ReplyingKafkaTemplate<String, String, Long> findUserTemplate
+                                    ) {
+        this.repository = repository;
+        this.eventService = eventService;
+        this.entityManager = entityManager;
+        this.findUserTemplate = findUserTemplate;
+    }
 
     private RequestReplyFuture<String, String, Long> getUserId(String login) {
 

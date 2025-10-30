@@ -14,6 +14,8 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +32,6 @@ import static event.rec.service.mappers.EventMapper.eventEntityToResponse;
 import static event.rec.service.utils.RegexPatternBuilder.buildSearchEventPattern;
 
 @Service
-@RequiredArgsConstructor
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -38,12 +39,22 @@ public class EventService {
 
     private final EntityManager entityManager;
 
-    @Resource(name = "findOrganizerTemplate")
     private final ReplyingKafkaTemplate<String, String, Long> findOrganizerTemplate;
     @Value("${kafka.topics.find.by.id.organizer.request}")
     private String findOrganizerRequestTopic;
     @Value("${kafka.topics.find.by.id.organizer.response}")
     private String findOrganizerReplyTopic;
+
+    public EventService(EventRepository eventRepository,
+                        EventCreator eventCreator,
+                        EntityManager entityManager,
+                        @Qualifier("findOrganizerTemplate")
+                        ReplyingKafkaTemplate<String, String, Long> findOrganizerTemplate) {
+        this.eventRepository = eventRepository;
+        this.eventCreator = eventCreator;
+        this.entityManager = entityManager;
+        this.findOrganizerTemplate = findOrganizerTemplate;
+    }
 
     public EventResponse createEvent(EventDto event, String organizerName)
             throws ExecutionException, InterruptedException {

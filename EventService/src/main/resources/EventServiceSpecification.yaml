@@ -291,7 +291,7 @@ components:
           example: [1, 5]
         status:
           type: string
-          enum: ["DRAFT", "PUBLISHED"]
+          enum: [DRAFT, PUBLISHED]
           example: "PUBLISHED"
       required:
         - title
