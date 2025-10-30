@@ -269,7 +269,7 @@ components:
       properties:
         title:
           type: string
-          example: "Концерт"
+          example: "Концерт Кино"
         description:
           type: string
           example: "Группа 'Кино' в Москве"
@@ -281,6 +281,9 @@ components:
           type: string
           format: date-time
           example: "2024-12-31T23:00:00Z"
+        organizerId:
+          type: integer
+          example: 2
         venueId:
           type: integer
           example: 1
@@ -288,10 +291,10 @@ components:
           type: array
           items:
             type: integer
-          example: [1, 2]
+          example: [1, 5]
         status:
           type: string
-          enum: [DRAFT, PUBLISHED]
+          enum: ["DRAFT", "PUBLISHED"]
           example: "PUBLISHED"
       required:
         - title

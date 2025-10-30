@@ -135,7 +135,7 @@ components:
           example: user@example.com
         password:
           type: string
-          example: securePassword123
+          example: "securePassword123"
 
     JwtResponse:
       type: object
@@ -144,7 +144,7 @@ components:
       properties:
         token:
           type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
     RegistrationRequest:
       type: object
@@ -155,13 +155,13 @@ components:
       properties:
         login:
           type: string
-          example: user@example.com
+          example: "user@example.com"
         password:
           type: string
-          example: securePassword123
+          example: "securePassword123"
         user_type:
           type: string
-          enum: [ADMIN, USER, ORGANIZER]
+          enum: ["ADMIN", "USER", "ORGANIZER"]
           description: Тип пользователя
 
     AdminRegistrationRequest:
@@ -173,7 +173,7 @@ components:
           properties:
             login:
               type: string
-              example: admin@example.com
+              example: "admin@example.com"
             user_type:
               type: string
               example: "ADMIN"
@@ -191,7 +191,7 @@ components:
           properties:
             login:
               type: string
-              example: user@example.com
+              example: "user@example.com"
             user_type:
               type: string
               example: "USER"
@@ -211,7 +211,7 @@ components:
           properties:
             login:
               type: string
-              example: organizer@example.com
+              example: "organizer@example.com"
             user_type:
               type: string
               example: "ORGANIZER"
