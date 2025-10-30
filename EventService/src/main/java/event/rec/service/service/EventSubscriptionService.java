@@ -7,12 +7,21 @@ import event.rec.service.mappers.EventSubscriptionMapper;
 import event.rec.service.repository.EventSubscriptionRepository;
 import event.rec.service.requests.ViewFavouriteRequest;
 import event.rec.service.responses.EventSubscriptionResponse;
+import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.kafka.requestreply.RequestReplyFuture;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +32,35 @@ public class EventSubscriptionService {
 
     private final EntityManager entityManager;
 
-    public void addToFavourite(EventSubscriptionDto eventSubscription) {
+    @Resource(name = "findCommonUserTemplate")
+    private final ReplyingKafkaTemplate<String, String, Long> findUserTemplate;
+
+    @Value("${kafka.topics.find.by.id.common.request}")
+    private String findUserRequestTopic;
+    @Value("${kafka.topics.find.by.id.common.response}")
+    private String findUserResponseTopic;
+
+    private RequestReplyFuture<String, String, Long> getUserId(String login) {
+
+        ProducerRecord<String, String> record = new ProducerRecord<>(
+                findUserRequestTopic,
+                login
+        );
+
+        record.headers().add(new RecordHeader(
+                KafkaHeaders.REPLY_TOPIC,
+                findUserResponseTopic.getBytes()
+        ));
+
+        return findUserTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+    }
+
+    public void addToFavourite(EventSubscriptionDto eventSubscription)
+            throws ExecutionException, InterruptedException {
 
         repository.save(EventSubscriptionMapper.eventSubscriptionDtoToEntity(
-                entityManager.getReference(CommonUserEntity.class, eventSubscription.userId()),
+                entityManager.getReference(CommonUserEntity.class,
+                        getUserId(eventSubscription.username()).get().value()),
                 eventService.findById(eventSubscription.eventId()),
                 eventSubscription
         ));

@@ -4,7 +4,32 @@ spring:
   config:
     import:
       - db-config.yml
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: find-user-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 8083
   url: "http://localhost:${server.port}"
+
+kafka:
+  topics:
+    find:
+      by:
+        id:
+          common:
+            request: "FindByIdCommonUserReq"
+            response: "FindByIdCommonUserResp"
+          organizer:
+            request: "FindByIdOrganizerReq"
+            response: "FindByIdOrganizerResp"
+          admin:
+            request: "FindByIdAdminReq"
+            response: "FindByIdAdminResp"

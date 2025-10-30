@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(userEntity);
     }
 
-    public UserEntity findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public Long findIdByLoginAndRole(String login, String role) {
+        return userRepository.findIdByLoginAndRole(login, role).orElse(null);
     }
 }

@@ -1,7 +1,6 @@
 package event.rec.service.listener;
 
 import event.rec.service.dto.AdminDto;
-import event.rec.service.entities.AdminEntity;
 import event.rec.service.interfaces.UserListenable;
 import event.rec.service.requests.AdminRegistrationRequest;
 import event.rec.service.service.AdminService;
@@ -24,8 +23,8 @@ public class AdminListener implements UserListenable<AdminRegistrationRequest> {
 
     @KafkaListener(topics = "${kafka.topics.find.by.id.admin.request}")
     @SendTo
-    public AdminEntity findById(@Payload Long id) {
-        return adminService.findById(id);
+    public Long findByUsername(@Payload String username) {
+        return userService.findIdByLoginAndRole(username, "ADMIN");
     }
 
     @Transactional

@@ -43,7 +43,8 @@ public final class EventMapper {
     }
 
     public static EventResponse eventEntityToResponse(EventEntity event) {
-        return new EventResponse(event.getTitle(),
+        return new EventResponse(event.getId(),
+                event.getTitle(),
                 event.getDescription(),
                 event.getStartTime(),
                 event.getEndTime(),

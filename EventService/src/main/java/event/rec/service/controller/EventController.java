@@ -10,8 +10,10 @@ import event.rec.service.service.EventSubscriptionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.TimeoutException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,10 +34,11 @@ public class EventController {
     private final EventSubscriptionService eventSubscriptionService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createEvent(@RequestBody EventDto event) {
+    public ResponseEntity<?> createEvent(@RequestBody EventDto event,
+                                         @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            return ResponseEntity.ok(eventService.createEvent(event));
+            return ResponseEntity.ok(eventService.createEvent(event, jwt.getSubject()));
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
@@ -53,10 +56,12 @@ public class EventController {
     }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<?> updateEvent(@PathVariable Long eventId, @RequestBody EventDto event) {
+    public ResponseEntity<?> updateEvent(@PathVariable Long eventId,
+                                         @RequestBody EventDto event,
+                                         @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            return ResponseEntity.ok(eventService.updateEvent(eventId, event));
+            return ResponseEntity.ok(eventService.updateEvent(eventId, event, jwt.getSubject()));
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();

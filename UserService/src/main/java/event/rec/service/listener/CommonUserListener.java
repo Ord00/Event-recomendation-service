@@ -1,7 +1,6 @@
 package event.rec.service.listener;
 
 import event.rec.service.dto.CommonUserDto;
-import event.rec.service.entities.CommonUserEntity;
 import event.rec.service.interfaces.UserListenable;
 import event.rec.service.requests.CommonUserRegistrationRequest;
 import event.rec.service.service.CommonUserService;
@@ -24,8 +23,8 @@ public class CommonUserListener implements UserListenable<CommonUserRegistration
 
     @KafkaListener(topics = "${kafka.topics.find.by.id.common.request}")
     @SendTo
-    public CommonUserEntity findById(@Payload Long id) {
-        return commonUserService.findById(id);
+        public Long findByUsername(@Payload String username) {
+        return userService.findIdByLoginAndRole(username, "USER");
     }
 
     @Transactional

@@ -5,7 +5,6 @@ import event.rec.service.entities.EventEntity;
 import event.rec.service.entities.OrganizerEntity;
 import event.rec.service.service.CategoryService;
 import event.rec.service.service.VenueService;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +17,10 @@ public class EventCreator {
     private final VenueService venueService;
     private final CategoryService categoryService;
 
-    private final EntityManager entityManager;
-
-    public EventEntity createEvent(EventDto event) {
+    public EventEntity createEvent(EventDto event, OrganizerEntity organizer) {
 
         return eventDtoToEventEntity(
-                entityManager.getReference(OrganizerEntity.class, event.organizerId()),
+                organizer,
                 venueService.findById(event.venueId()),
                 event.categoryIds().stream().map(categoryService::findById).toList(),
                 event);

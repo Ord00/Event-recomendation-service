@@ -7,7 +7,8 @@ import event.rec.service.dto.VenueDto;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public record EventResponse(String title,
+public record EventResponse(Long id,
+                            String title,
                             String description,
                             OffsetDateTime startTime,
                             OffsetDateTime endTime,

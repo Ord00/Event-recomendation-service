@@ -4,6 +4,6 @@ import event.rec.service.requests.RegistrationRequest;
 
 public interface UserListenable<T extends RegistrationRequest> {
 
-    UserHolder findById(Long userId);
+    Long findByUsername(String username);
     Boolean listenRegister(T request);
 }

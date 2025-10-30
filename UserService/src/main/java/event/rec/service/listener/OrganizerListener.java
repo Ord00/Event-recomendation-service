@@ -1,7 +1,6 @@
 package event.rec.service.listener;
 
 import event.rec.service.dto.OrganizerDto;
-import event.rec.service.entities.OrganizerEntity;
 import event.rec.service.interfaces.UserListenable;
 import event.rec.service.requests.OrganizerRegistrationRequest;
 import event.rec.service.service.OrganizerService;
@@ -24,8 +23,8 @@ public class OrganizerListener implements UserListenable<OrganizerRegistrationRe
 
     @KafkaListener(topics = "${kafka.topics.find.by.id.organizer.request}")
     @SendTo
-    public OrganizerEntity findById(@Payload Long id) {
-        return organizerService.findById(id);
+    public Long findByUsername(@Payload String username) {
+        return userService.findIdByLoginAndRole(username, "ORGANIZER");
     }
 
     @Transactional
