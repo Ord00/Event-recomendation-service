@@ -3,6 +3,7 @@ package event.rec.service.utils;
 import event.rec.service.dto.EventDto;
 import event.rec.service.entities.EventEntity;
 import event.rec.service.entities.OrganizerEntity;
+import event.rec.service.repository.EventRepository;
 import event.rec.service.service.CategoryService;
 import event.rec.service.service.VenueService;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +15,18 @@ import static event.rec.service.mappers.EventMapper.eventDtoToEventEntity;
 @RequiredArgsConstructor
 public class EventCreator {
 
+    private final EventRepository eventRepository;
+
     private final VenueService venueService;
     private final CategoryService categoryService;
 
     public EventEntity createEvent(EventDto event, OrganizerEntity organizer) {
 
-        return eventDtoToEventEntity(
+        return eventRepository.save(eventDtoToEventEntity(
                 organizer,
                 venueService.findById(event.venueId()),
                 event.categoryIds().stream().map(categoryService::findById).toList(),
-                event);
+                event)
+        );
     }
 }

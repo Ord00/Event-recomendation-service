@@ -11,11 +11,15 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByLogin(String login);
 
-    @Query("SELECT u.id FROM UserEntity u " +
-            "WHERE u.login = :login " +
-            "AND (:role = 'ADMIN' AND u.admin IS NOT NULL OR " +
-            ":role = 'ORGANIZER' AND u.organizer IS NOT NULL OR " +
-            ":role = 'USER' AND u.commonUser IS NOT NULL)")
+    @Query(value = """
+        SELECT u.id FROM "user" u
+        WHERE u.login = :login
+        AND (
+            (:role = 'ADMIN' AND EXISTS (SELECT 1 FROM admin a WHERE a.id = u.id)) OR
+            (:role = 'ORGANIZER' AND EXISTS (SELECT 1 FROM organizer o WHERE o.id = u.id)) OR
+            (:role = 'USER' AND EXISTS (SELECT 1 FROM common_user cu WHERE cu.id = u.id))
+        )
+        """, nativeQuery = true)
     Optional<Long> findIdByLoginAndRole(String login,
                                         String role);
 }

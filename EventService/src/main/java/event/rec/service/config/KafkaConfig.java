@@ -2,7 +2,6 @@ package event.rec.service.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +35,7 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
-                new LongDeserializer());
+                new JsonDeserializer<>(Long.class));
     }
 
     private Map<String, Object> producerConfigs() {
