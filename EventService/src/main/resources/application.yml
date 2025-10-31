@@ -4,6 +4,7 @@ spring:
   config:
     import:
       - db-config.yml
+      - jwt-config.yml
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -13,7 +14,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.LongSerializer
 
 server:
   port: 8083
