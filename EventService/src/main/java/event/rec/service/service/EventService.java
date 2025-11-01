@@ -10,15 +10,11 @@ import event.rec.service.requests.ViewEventNearbyRequest;
 import event.rec.service.responses.EventResponse;
 import event.rec.service.utils.EventCreator;
 import jakarta.persistence.EntityManager;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,16 +52,6 @@ public class EventService {
     public EventResponse createEvent(EventDto event, String organizerName)
             throws ExecutionException, InterruptedException {
 
-        ProducerRecord<String, String> record = new ProducerRecord<>(
-                findOrganizerIdRequestTopic,
-                organizerName
-        );
-
-        record.headers().add(new RecordHeader(
-                KafkaHeaders.REPLY_TOPIC,
-                findOrganizerIdReplyTopic.getBytes()
-        ));
-
         RequestReplyFuture<String, String, Long> future = findUserId(
                 findOrganizerIdRequestTopic,
                 findOrganizerIdReplyTopic,
@@ -96,16 +82,6 @@ public class EventService {
             throw new IllegalArgumentException("Event not found");
         }
 
-        ProducerRecord<String, String> record = new ProducerRecord<>(
-                findOrganizerIdRequestTopic,
-                organizerName
-        );
-
-        record.headers().add(new RecordHeader(
-                KafkaHeaders.REPLY_TOPIC,
-                findOrganizerIdReplyTopic.getBytes()
-        ));
-
         RequestReplyFuture<String, String, Long> future = findUserId(
                 findOrganizerIdRequestTopic,
                 findOrganizerIdReplyTopic,
@@ -131,12 +107,15 @@ public class EventService {
 
     public List<EventResponse> searchEvents(SearchEventRequest request) {
 
-        return eventRepository.searchEvent(buildSearchEventPattern(request.query()),
-                        request.categoryIds(),
-                        request.from(),
-                        request.to(),
-                        PageRequest.of(request.page(), request.size())
-                ).stream()
+        List<Long> eventIds = eventRepository.searchEventIds(
+                buildSearchEventPattern(request.query()),
+                request.categoryIds(),
+                request.from(),
+                request.to(),
+                request.size(),
+                (request.page() - 1) * request.size());
+
+        return eventRepository.searchEvent(eventIds).stream()
                 .map(EventMapper::eventEntityToResponse)
                 .toList();
     }

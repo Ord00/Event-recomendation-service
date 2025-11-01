@@ -13,16 +13,21 @@ import java.util.Optional;
 @Repository
 public interface EventSubscriptionRepository extends JpaRepository<EventSubscriptionEntity, Long> {
 
-    @Query("SELECT es FROM EventSubscriptionEntity es " +
-            "JOIN FETCH es.idEvent e " +
-            "JOIN FETCH e.idOrganizer " +
-            "JOIN FETCH e.idVenue " +
-            "LEFT JOIN FETCH e.categoryEvents ce " +
-            "LEFT JOIN FETCH ce.idCategory " +
-            "WHERE es.idUser.id = :userId")
-    List<EventSubscriptionEntity> findByUserId(@Param("userId")Long userId, Pageable pageable);
+    @Query("""
+            SELECT es FROM EventSubscriptionEntity es
+                JOIN FETCH es.idEvent e
+                JOIN FETCH e.idOrganizer
+                JOIN FETCH e.idVenue
+                LEFT JOIN FETCH e.categoryEvents ce
+                LEFT JOIN FETCH ce.idCategory
+            WHERE es.idUser.id = :userId
+            """)
+    List<EventSubscriptionEntity> findByUserId(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("SELECT es FROM EventSubscriptionEntity es WHERE es.idUser.id = :userId AND es.idEvent.id = :eventId")
+    @Query("""
+            SELECT es FROM EventSubscriptionEntity es
+            WHERE es.idUser.id = :userId AND es.idEvent.id = :eventId
+            """)
     Optional<EventSubscriptionEntity> findByUserIdAndEventId(@Param("userId") Long userId,
                                                              @Param("eventId") Long eventId);
 }
