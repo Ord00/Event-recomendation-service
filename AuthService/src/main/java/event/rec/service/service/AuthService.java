@@ -19,9 +19,9 @@ import java.util.concurrent.ExecutionException;
 public class AuthService {
 
     private final ReplyingKafkaTemplate<String, JwtRequest, JwtResponse> signInTemplate;
-    @Value("${kafka.signin.request}")
+    @Value("${kafka.sign.in.request}")
     private String signInRequestTopic;
-    @Value("${kafka.signin.response}")
+    @Value("${kafka.sign.in.response}")
     private String signInReplyTopic;
 
     public JwtResponse signIn(JwtRequest jwtRequest) throws ExecutionException, InterruptedException {

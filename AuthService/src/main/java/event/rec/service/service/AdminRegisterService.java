@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
 
+import static event.rec.service.utils.CommonUserRegistrar.registerUserInCommon;
+
 @Service
 @RequiredArgsConstructor
 public class AdminRegisterService implements UserRegistrable<AdminRegistrationRequest> {

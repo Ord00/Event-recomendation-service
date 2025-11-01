@@ -35,7 +35,7 @@ public class AuthController {
     private final CommonUserRegisterService commonRegisterService;
     private final AdminRegisterService adminRegisterService;
 
-    @PostMapping("/signin")
+    @PostMapping("/sign/in")
     public ResponseEntity<?> signIn(@RequestBody JwtRequest jwtRequest) {
         try {
 

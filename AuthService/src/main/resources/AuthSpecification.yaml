@@ -7,7 +7,7 @@ servers:
     description: Auth server
 
 paths:
-  /signin:
+  /sign/in:
     post:
       summary: Метод входа в систему
       tags:

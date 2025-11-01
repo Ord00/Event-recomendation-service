@@ -21,11 +21,11 @@ import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static event.rec.service.mappers.EventMapper.eventEntityToResponse;
+import static event.rec.service.utils.KafkaRequestSender.findUserId;
 import static event.rec.service.utils.RegexPatternBuilder.buildSearchEventPattern;
 
 @Service
@@ -66,8 +66,11 @@ public class EventService {
                 findOrganizerIdReplyTopic.getBytes()
         ));
 
-        RequestReplyFuture<String, String, Long> future =
-                findOrganizerIdTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+        RequestReplyFuture<String, String, Long> future = findUserId(
+                findOrganizerIdRequestTopic,
+                findOrganizerIdReplyTopic,
+                organizerName,
+                findOrganizerIdTemplate);
 
         return eventEntityToResponse(eventCreator.createEvent(
                 event,
@@ -103,8 +106,11 @@ public class EventService {
                 findOrganizerIdReplyTopic.getBytes()
         ));
 
-        RequestReplyFuture<String, String, Long> future =
-                findOrganizerIdTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+        RequestReplyFuture<String, String, Long> future = findUserId(
+                findOrganizerIdRequestTopic,
+                findOrganizerIdReplyTopic,
+                organizerName,
+                findOrganizerIdTemplate);
 
         try {
             EventEntity entity = eventCreator.createEvent(event,

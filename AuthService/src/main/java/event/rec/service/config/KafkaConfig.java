@@ -77,10 +77,10 @@ public class KafkaConfig {
         return props;
     }
 
-    @Value("${kafka.signin.request}")
+    @Value("${kafka.sign.in.request}")
     private String signInRequestTopic;
 
-    @Value("${kafka.signin.response}")
+    @Value("${kafka.sign.in.response}")
     private String signInResponseTopic;
 
     @Bean

@@ -56,10 +56,10 @@ public class KafkaConfig {
         return props;
     }
 
-    @Value("${kafka.topics.find.by.id.organizer.request}")
+    @Value("${kafka.topics.find.by.username.organizer.request}")
     private String findOrganizerRequestTopic;
 
-    @Value("${kafka.topics.find.by.id.organizer.response}")
+    @Value("${kafka.topics.find.by.username.organizer.response}")
     private String findOrganizerReplyTopic;
 
     @Bean
@@ -75,10 +75,10 @@ public class KafkaConfig {
         }};
     }
 
-    @Value("${kafka.topics.find.by.id.common.request}")
+    @Value("${kafka.topics.find.by.username.common.request}")
     private String findCommonUserRequestTopic;
 
-    @Value("${kafka.topics.find.by.id.common.response}")
+    @Value("${kafka.topics.find.by.username.common.response}")
     private String findCommonUserReplyTopic;
 
     @Bean

@@ -8,19 +8,17 @@ import event.rec.service.repository.EventSubscriptionRepository;
 import event.rec.service.requests.ViewFavouriteRequest;
 import event.rec.service.responses.EventSubscriptionResponse;
 import jakarta.persistence.EntityManager;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static event.rec.service.utils.KafkaRequestSender.findUserId;
 
 @Service
 public class EventSubscriptionService {
@@ -50,17 +48,11 @@ public class EventSubscriptionService {
 
     private RequestReplyFuture<String, String, Long> getUserId(String login) {
 
-        ProducerRecord<String, String> record = new ProducerRecord<>(
+        return findUserId(
                 findUserIdRequestTopic,
-                login
-        );
-
-        record.headers().add(new RecordHeader(
-                KafkaHeaders.REPLY_TOPIC,
-                findUserIdResponseTopic.getBytes()
-        ));
-
-        return findUserIdTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+                findUserIdResponseTopic,
+                login,
+                findUserIdTemplate);
     }
 
     public void addToFavourite(EventSubscriptionDto eventSubscription)
