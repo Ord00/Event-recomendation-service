@@ -14,11 +14,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = """
         SELECT u.id FROM "user" u
         WHERE u.login = :login
-        AND (
-            (:role = 'ADMIN' AND EXISTS (SELECT 1 FROM admin a WHERE a.id = u.id)) OR
-            (:role = 'ORGANIZER' AND EXISTS (SELECT 1 FROM organizer o WHERE o.id = u.id)) OR
-            (:role = 'USER' AND EXISTS (SELECT 1 FROM common_user cu WHERE cu.id = u.id))
-        )
+            AND (
+                (:role = 'ADMIN' AND EXISTS (SELECT 1 FROM admin a WHERE a.id = u.id)) OR
+                (:role = 'ORGANIZER' AND EXISTS (SELECT 1 FROM organizer o WHERE o.id = u.id)) OR
+                (:role = 'USER' AND EXISTS (SELECT 1 FROM common_user cu WHERE cu.id = u.id))
+            )
         """, nativeQuery = true)
     Optional<Long> findIdByLoginAndRole(String login,
                                         String role);
