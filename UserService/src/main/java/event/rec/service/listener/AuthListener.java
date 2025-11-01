@@ -23,7 +23,7 @@ public class AuthListener {
     private final PasswordEncoder passwordEncoder;
     private final TokenGenerator tokenGenerator;
 
-    @KafkaListener(topics = "${kafka.topics.signin.request}")
+    @KafkaListener(topics = "${kafka.topics.sign.in.request}")
     @SendTo
     public JwtResponse listenSignIn(@Payload JwtRequest request) {
         try {

@@ -9,12 +9,9 @@ import event.rec.service.requests.SearchEventRequest;
 import event.rec.service.requests.ViewEventNearbyRequest;
 import event.rec.service.responses.EventResponse;
 import event.rec.service.utils.EventCreator;
-import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,38 +36,38 @@ public class EventService {
 
     private final EntityManager entityManager;
 
-    private final ReplyingKafkaTemplate<String, String, Long> findOrganizerTemplate;
-    @Value("${kafka.topics.find.by.id.organizer.request}")
-    private String findOrganizerRequestTopic;
-    @Value("${kafka.topics.find.by.id.organizer.response}")
-    private String findOrganizerReplyTopic;
+    private final ReplyingKafkaTemplate<String, String, Long> findOrganizerIdTemplate;
+    @Value("${kafka.topics.find.by.username.organizer.request}")
+    private String findOrganizerIdRequestTopic;
+    @Value("${kafka.topics.find.by.username.organizer.response}")
+    private String findOrganizerIdReplyTopic;
 
     public EventService(EventRepository eventRepository,
                         EventCreator eventCreator,
                         EntityManager entityManager,
                         @Qualifier("findOrganizerTemplate")
-                        ReplyingKafkaTemplate<String, String, Long> findOrganizerTemplate) {
+                        ReplyingKafkaTemplate<String, String, Long> findOrganizerIdTemplate) {
         this.eventRepository = eventRepository;
         this.eventCreator = eventCreator;
         this.entityManager = entityManager;
-        this.findOrganizerTemplate = findOrganizerTemplate;
+        this.findOrganizerIdTemplate = findOrganizerIdTemplate;
     }
 
     public EventResponse createEvent(EventDto event, String organizerName)
             throws ExecutionException, InterruptedException {
 
         ProducerRecord<String, String> record = new ProducerRecord<>(
-                findOrganizerRequestTopic,
+                findOrganizerIdRequestTopic,
                 organizerName
         );
 
         record.headers().add(new RecordHeader(
                 KafkaHeaders.REPLY_TOPIC,
-                findOrganizerReplyTopic.getBytes()
+                findOrganizerIdReplyTopic.getBytes()
         ));
 
         RequestReplyFuture<String, String, Long> future =
-                findOrganizerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+                findOrganizerIdTemplate.sendAndReceive(record, Duration.ofSeconds(5));
 
         return eventEntityToResponse(eventCreator.createEvent(
                 event,
@@ -97,17 +94,17 @@ public class EventService {
         }
 
         ProducerRecord<String, String> record = new ProducerRecord<>(
-                findOrganizerRequestTopic,
+                findOrganizerIdRequestTopic,
                 organizerName
         );
 
         record.headers().add(new RecordHeader(
                 KafkaHeaders.REPLY_TOPIC,
-                findOrganizerReplyTopic.getBytes()
+                findOrganizerIdReplyTopic.getBytes()
         ));
 
         RequestReplyFuture<String, String, Long> future =
-                findOrganizerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+                findOrganizerIdTemplate.sendAndReceive(record, Duration.ofSeconds(5));
 
         try {
             EventEntity entity = eventCreator.createEvent(event,

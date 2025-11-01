@@ -24,13 +24,10 @@ kafka:
   topics:
     find:
       by:
-        id:
+        username:
           common:
-            request: "FindByIdCommonUserReq"
-            response: "FindByIdCommonUserResp"
+            request: "FindByUsernameCommonUserReq"
+            response: "FindByUsernameCommonUserResp"
           organizer:
-            request: "FindByIdOrganizerReq"
-            response: "FindByIdOrganizerResp"
-          admin:
-            request: "FindByIdAdminReq"
-            response: "FindByIdAdminResp"
+            request: "FindByUsernameOrganizerReq"
+            response: "FindByUsernameOrganizerResp"

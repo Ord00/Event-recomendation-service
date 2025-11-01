@@ -21,7 +21,7 @@ public class CommonUserListener implements UserListenable<CommonUserRegistration
     private final UserService userService;
     CommonUserService commonUserService;
 
-    @KafkaListener(topics = "${kafka.topics.find.by.id.common.request}")
+    @KafkaListener(topics = "${kafka.topics.find.by.username.common.request}")
     @SendTo
         public Long findByUsername(@Payload String username) {
         return userService.findIdByLoginAndRole(username, "USER");

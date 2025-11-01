@@ -17,8 +17,9 @@ spring:
 
 kafka:
   topics:
-    signin:
-      request: "SignInReq"
+    sign:
+      in:
+        request: "SignInReq"
     register:
       common:
         request: "RegisterCommonUserReq"
@@ -28,13 +29,13 @@ kafka:
         request: "RegisterAdminReq"
     find:
       by:
-        id:
+        username:
           common:
-            request: "FindByIdCommonUserReq"
+            request: "FindByUsernameCommonUserReq"
           organizer:
-            request: "FindByIdOrganizerReq"
+            request: "FindByUsernameOrganizerReq"
           admin:
-            request: "FindByIdAdminReq"
+            request: "FindByUsernameAdminReq"
 
 server:
   port: 8084
