@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static event.rec.service.mappers.OrganizerMapper.OrganizerDTOToEntity;
+import static event.rec.service.mappers.OrganizerMapper.organizerDTOToEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +18,13 @@ public class OrganizerService {
 
     @Transactional
     public void createOrganizer(UserEntity userEntity, OrganizerDto organizerDTO) {
-        OrganizerEntity organizerEntity = OrganizerDTOToEntity(organizerDTO);
-        organizerEntity.setUser(userEntity);
+
+        OrganizerEntity organizerEntity = organizerDTOToEntity(organizerDTO);
+        organizerEntity.setUserEntity(userEntity);
         organizerRepository.save(organizerEntity);
+    }
+
+    public OrganizerEntity findById(Long id) {
+        return organizerRepository.findById(id).orElse(null);
     }
 }

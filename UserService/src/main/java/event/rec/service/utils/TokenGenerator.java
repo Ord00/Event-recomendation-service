@@ -13,6 +13,7 @@ import java.util.Map;
 @Slf4j
 @Component
 public class TokenGenerator extends JwtBaseParser {
+
     public String generateToken(UserDetails userDetails) {
         if (lifetime == null) {
             throw new IllegalStateException("JWT lifetime is not configured");

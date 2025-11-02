@@ -1,5 +1,6 @@
 package event.rec.service.entities;
 
+import event.rec.service.interfaces.UserHolder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,14 +22,14 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "common_user")
-public class CommonUserEntity {
+public class CommonUserEntity implements UserHolder {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id", nullable = false)
     private UserEntity userEntity;
 
     @Size(max = 100)

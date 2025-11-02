@@ -3,6 +3,10 @@ package event.rec.service.requests;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public record SearchEventRequest(List<Long> categoryIds,
+public record SearchEventRequest(String query,
+                                 List<Long> categoryIds,
                                  OffsetDateTime from,
-                                 OffsetDateTime to) {}
+                                 OffsetDateTime to,
+                                 Integer page,
+                                 Integer size) {
+}

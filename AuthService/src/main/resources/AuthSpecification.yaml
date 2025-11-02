@@ -1,15 +1,15 @@
 openapi: 3.1.0
 info:
-  title: Сервис авторизации
+  title: РЎРµСЂРІРёСЃ Р°РІС‚РѕСЂРёР·Р°С†РёРё
   version: 1.0.0
 servers:
-  - url: http://localhost:8081/auth/
+  - url: http://localhost:8081/auth
     description: Auth server
 
 paths:
-  /signin:
+  /sign/in:
     post:
-      summary: Метод входа в систему
+      summary: РњРµС‚РѕРґ РІС…РѕРґР° РІ СЃРёСЃС‚РµРјСѓ
       tags:
         - Auth
       requestBody:
@@ -20,13 +20,13 @@ paths:
               $ref: "#/components/schemas/JwtRequest"
       responses:
         '200':
-          description: Успешный вход в систему
+          description: РЈСЃРїРµС€РЅС‹Р№ РІС…РѕРґ РІ СЃРёСЃС‚РµРјСѓ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/JwtResponse"
         '401':
-          description: Неверный логин или пароль
+          description: РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ
           content:
             application/json:
               schema:
@@ -34,7 +34,7 @@ paths:
 
   /register/user:
     post:
-      summary: Регистрация обычного пользователя
+      summary: Р РµРіРёСЃС‚СЂР°С†РёСЏ РѕР±С‹С‡РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
       tags:
         - Registration
       requestBody:
@@ -45,13 +45,13 @@ paths:
               $ref: "#/components/schemas/CommonUserRegistrationRequest"
       responses:
         '200':
-          description: Успешная регистрация
+          description: РЈСЃРїРµС€РЅР°СЏ СЂРµРіРёСЃС‚СЂР°С†РёСЏ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/JwtResponse"
         '400':
-          description: Неверные данные или пользователь уже существует
+          description: РќРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ РёР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
           content:
             application/json:
               schema:
@@ -59,7 +59,7 @@ paths:
 
   /register/organizer:
     post:
-      summary: Регистрация организатора
+      summary: Р РµРіРёСЃС‚СЂР°С†РёСЏ РѕСЂРіР°РЅРёР·Р°С‚РѕСЂР°
       tags:
         - Registration
       requestBody:
@@ -70,13 +70,13 @@ paths:
               $ref: "#/components/schemas/OrganizerRegistrationRequest"
       responses:
         '200':
-          description: Успешная регистрация
+          description: РЈСЃРїРµС€РЅР°СЏ СЂРµРіРёСЃС‚СЂР°С†РёСЏ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/JwtResponse"
         '400':
-          description: Неверные данные или пользователь уже существует
+          description: РќРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ РёР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
           content:
             application/json:
               schema:
@@ -84,7 +84,7 @@ paths:
 
   /admin/register:
     post:
-      summary: Регистрация администратора (только для админов)
+      summary: Р РµРіРёСЃС‚СЂР°С†РёСЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° (С‚РѕР»СЊРєРѕ РґР»СЏ Р°РґРјРёРЅРѕРІ)
       tags:
         - Registration
       security:
@@ -97,19 +97,19 @@ paths:
               $ref: "#/components/schemas/AdminRegistrationRequest"
       responses:
         '200':
-          description: Успешная регистрация
+          description: РЈСЃРїРµС€РЅР°СЏ СЂРµРіРёСЃС‚СЂР°С†РёСЏ
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/JwtResponse"
         '400':
-          description: Неверные данные или пользователь уже существует
+          description: РќРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ РёР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppError"
         '403':
-          description: Доступ запрещен
+          description: Р”РѕСЃС‚СѓРї Р·Р°РїСЂРµС‰РµРЅ
           content:
             application/json:
               schema:
@@ -162,7 +162,7 @@ components:
         user_type:
           type: string
           enum: [ADMIN, USER, ORGANIZER]
-          description: Тип пользователя
+          description: РўРёРї РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 
     AdminRegistrationRequest:
       allOf:
@@ -179,7 +179,7 @@ components:
               example: "ADMIN"
             full_name:
               type: string
-              example: "Иван Иванов"
+              example: "РРІР°РЅ РРІР°РЅРѕРІ"
 
     CommonUserRegistrationRequest:
       allOf:
@@ -197,7 +197,7 @@ components:
               example: "USER"
             full_name:
               type: string
-              example: "Петр Петров"
+              example: "РџРµС‚СЂ РџРµС‚СЂРѕРІ"
             phone_number:
               type: string
               example: "+79001234567"
@@ -217,7 +217,7 @@ components:
               example: "ORGANIZER"
             organizer_name:
               type: string
-              example: "Организация ООО"
+              example: "РћСЂРіР°РЅРёР·Р°С†РёСЏ РћРћРћ"
 
     AppError:
       type: object
@@ -231,7 +231,7 @@ components:
           example: 400
         message:
           type: string
-          example: "Пользователь уже существует"
+          example: "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"
         timestamp:
           type: string
           format: date-time

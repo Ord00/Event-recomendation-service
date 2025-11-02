@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-    public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
+public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
 
     private final JwtParser jwtParser;
 

@@ -17,7 +17,7 @@ spring:
             - id: event-service
               uri: http://localhost:8083
               predicates:
-                - Path=/events/**
+                - Path=/event/**
               filters:
                 - name: JwtFilter
   autoconfigure:

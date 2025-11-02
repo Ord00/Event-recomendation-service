@@ -1,6 +1,5 @@
 package event.rec.service.config;
 
-import event.rec.service.entities.OrganizerEntity;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -28,15 +27,15 @@ public class KafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public ProducerFactory<String, Long> findUserProducerFactory() {
+    public ProducerFactory<String, String> findUserIdProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
-    public <T> ConsumerFactory<String, T> createConsumerFactory(Class<T> userClass) {
+    public ConsumerFactory<String, Long> createConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(userClass));
+                new JsonDeserializer<>(Long.class));
     }
 
     private Map<String, Object> producerConfigs() {
@@ -57,29 +56,46 @@ public class KafkaConfig {
         return props;
     }
 
-    @Value("${kafka.topics.find.by.id.request}")
+    @Value("${kafka.topics.find.by.username.organizer.request}")
     private String findOrganizerRequestTopic;
 
-    @Value("${kafka.topics.find.by.id.response}")
+    @Value("${kafka.topics.find.by.username.organizer.response}")
     private String findOrganizerReplyTopic;
 
     @Bean
-    public ReplyingKafkaTemplate<String, Long, OrganizerEntity> findOrganizerTemplate(
-            ProducerFactory<String, Long> organizerFindProducerFactory) {
+    public ReplyingKafkaTemplate<String, String, Long> findOrganizerTemplate() {
 
-        ConsumerFactory<String, OrganizerEntity> organizerConsumerFactory =
-                createConsumerFactory(OrganizerEntity.class);
+        ConsumerFactory<String, Long> organizerConsumerFactory = createConsumerFactory();
 
-        ConcurrentMessageListenerContainer<String, OrganizerEntity> replyContainer =
-                replyContainer(organizerConsumerFactory, "auth-group", findOrganizerReplyTopic);
+        ConcurrentMessageListenerContainer<String, Long> replyContainer =
+                replyContainer(organizerConsumerFactory, "organizer-group", findOrganizerReplyTopic);
 
-        return new ReplyingKafkaTemplate<>(organizerFindProducerFactory, replyContainer) {{
+        return new ReplyingKafkaTemplate<>(findUserIdProducerFactory(), replyContainer) {{
             setDefaultTopic(findOrganizerRequestTopic);
         }};
     }
 
-    private <R> ConcurrentMessageListenerContainer<String, R> replyContainer(
-            ConsumerFactory<String, R> consumerFactory,
+    @Value("${kafka.topics.find.by.username.common.request}")
+    private String findCommonUserRequestTopic;
+
+    @Value("${kafka.topics.find.by.username.common.response}")
+    private String findCommonUserReplyTopic;
+
+    @Bean
+    public ReplyingKafkaTemplate<String, String, Long> findCommonUserTemplate() {
+
+        ConsumerFactory<String, Long> commonUserConsumerFactory = createConsumerFactory();
+
+        ConcurrentMessageListenerContainer<String, Long> replyContainer =
+                replyContainer(commonUserConsumerFactory, "common-user-group", findCommonUserReplyTopic);
+
+        return new ReplyingKafkaTemplate<>(findUserIdProducerFactory(), replyContainer) {{
+            setDefaultTopic(findCommonUserRequestTopic);
+        }};
+    }
+
+    private ConcurrentMessageListenerContainer<String, Long> replyContainer(
+            ConsumerFactory<String, Long> consumerFactory,
             String groupId,
             String replyTopic) {
 

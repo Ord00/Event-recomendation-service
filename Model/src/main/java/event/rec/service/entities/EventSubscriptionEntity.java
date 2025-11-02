@@ -9,8 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.Duration;
 
 @Getter
 @Setter
@@ -30,4 +34,11 @@ public class EventSubscriptionEntity {
     @JoinColumn(name = "id_user")
     private CommonUserEntity idUser;
 
+    @Size(max = 20)
+    @NotNull
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "notify_time", nullable = false)
+    private Duration notifyTime;
 }

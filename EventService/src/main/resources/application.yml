@@ -4,13 +4,14 @@ spring:
   config:
     import:
       - db-config.yml
+      - jwt-config.yml
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: find-user-consumer
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -23,6 +24,10 @@ kafka:
   topics:
     find:
       by:
-        id:
-          request: "FindByIdReq"
-          response: "FindByIdResp"
+        username:
+          common:
+            request: "FindByUsernameCommonUserReq"
+            response: "FindByUsernameCommonUserResp"
+          organizer:
+            request: "FindByUsernameOrganizerReq"
+            response: "FindByUsernameOrganizerResp"
