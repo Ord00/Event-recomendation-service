@@ -45,4 +45,8 @@
 ***
 # База данных
 <img width="1109" height="614" alt="image" src="https://github.com/user-attachments/assets/b08a6050-d94d-4be4-8b30-35073e725a20" />
+***
+# Схема проекта
+<img width="1174" height="803" alt="image" src="https://github.com/user-attachments/assets/0bba2f3f-327a-41d5-982e-7f3d22200ae6" />
+
 
