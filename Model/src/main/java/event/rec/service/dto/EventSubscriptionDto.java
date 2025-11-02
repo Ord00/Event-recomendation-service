@@ -2,7 +2,7 @@ package event.rec.service.dto;
 
 import java.time.Duration;
 
-public record EventSubscriptionDto(Long userId,
+public record EventSubscriptionDto(String username,
                                    Long eventId,
                                    Duration notifyTime) {
 }

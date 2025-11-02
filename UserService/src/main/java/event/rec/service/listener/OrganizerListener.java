@@ -1,0 +1,41 @@
+package event.rec.service.listener;
+
+import event.rec.service.dto.OrganizerDto;
+import event.rec.service.interfaces.UserListenable;
+import event.rec.service.requests.OrganizerRegistrationRequest;
+import event.rec.service.service.OrganizerService;
+import event.rec.service.service.UserService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Component;
+
+import static event.rec.service.utils.UserRegistrar.registerUser;
+
+@Component
+@RequiredArgsConstructor
+public class OrganizerListener implements UserListenable<OrganizerRegistrationRequest> {
+
+    private final UserService userService;
+    private final OrganizerService organizerService;
+
+    @KafkaListener(topics = "${kafka.topics.find.by.username.organizer.request}")
+    @SendTo
+    public Long findByUsername(@Payload String username) {
+        return userService.findIdByLoginAndRole(username, "ORGANIZER");
+    }
+
+    @Transactional
+    @KafkaListener(topics = "${kafka.topics.register.organizer.request}")
+    @SendTo
+    public Boolean listenRegister(@Payload OrganizerRegistrationRequest request) {
+        return registerUser(userService, request, (userEntity, req) ->
+                organizerService.createOrganizer(
+                        userEntity,
+                        new OrganizerDto(req.getOrganizerName())
+                )
+        );
+    }
+}

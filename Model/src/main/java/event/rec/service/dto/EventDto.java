@@ -9,6 +9,5 @@ public record EventDto(String title,
                        OffsetDateTime endTime,
                        String recurrence,
                        String status,
-                       Long organizerId,
                        Long venueId,
                        List<Long> categoryIds) {}

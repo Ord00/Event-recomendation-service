@@ -1,5 +1,6 @@
 package event.rec.service.entities;
 
+import event.rec.service.interfaces.UserHolder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,14 +18,14 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "admin")
-public class AdminEntity {
+public class AdminEntity implements UserHolder {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id", nullable = false)
     private UserEntity userEntity;
 
     @Size(max = 100)

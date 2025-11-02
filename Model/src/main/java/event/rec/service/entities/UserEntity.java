@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,15 @@ public class UserEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "userEntity")
+    private AdminEntity admin;
+
+    @OneToOne(mappedBy = "userEntity")
+    private CommonUserEntity commonUser;
+
+    @OneToOne(mappedBy = "userEntity")
+    private OrganizerEntity organizer;
 
     public UserEntity(String login, String password) {
         this.login = login;

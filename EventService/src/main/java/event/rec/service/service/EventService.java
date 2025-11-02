@@ -3,53 +3,65 @@ package event.rec.service.service;
 import event.rec.service.dto.EventDto;
 import event.rec.service.entities.EventEntity;
 import event.rec.service.entities.OrganizerEntity;
+import event.rec.service.mappers.EventMapper;
 import event.rec.service.repository.EventRepository;
-import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.internals.RecordHeader;
+import event.rec.service.requests.SearchEventRequest;
+import event.rec.service.requests.ViewEventNearbyRequest;
+import event.rec.service.responses.EventResponse;
+import event.rec.service.utils.EventCreator;
+import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static event.rec.service.mappers.EventMapper.EventDtoToEventEntity;
+import static event.rec.service.mappers.EventMapper.eventEntityToResponse;
+import static event.rec.service.utils.KafkaRequestSender.findUserId;
+import static event.rec.service.utils.RegexPatternBuilder.buildSearchEventPattern;
 
 @Service
-@RequiredArgsConstructor
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final VenueService venueService;
+    private final EventCreator eventCreator;
 
-    private final ReplyingKafkaTemplate<String, Long, OrganizerEntity> findOrganizerTemplate;
-    @Value("${kafka.topics.find.by.id.request}")
-    private String findOrganizerRequestTopic;
-    @Value("${kafka.topics.find.by.id.response}")
-    private String findOrganizerReplyTopic;
+    private final EntityManager entityManager;
 
-    public EventEntity createEvent(EventDto event) throws ExecutionException, InterruptedException {
+    private final ReplyingKafkaTemplate<String, String, Long> findOrganizerIdTemplate;
+    @Value("${kafka.topics.find.by.username.organizer.request}")
+    private String findOrganizerIdRequestTopic;
+    @Value("${kafka.topics.find.by.username.organizer.response}")
+    private String findOrganizerIdReplyTopic;
 
-        ProducerRecord<String, Long> record = new ProducerRecord<>(
-                findOrganizerRequestTopic,
-                event.organizerId()
+    public EventService(EventRepository eventRepository,
+                        EventCreator eventCreator,
+                        EntityManager entityManager,
+                        @Qualifier("findOrganizerTemplate")
+                        ReplyingKafkaTemplate<String, String, Long> findOrganizerIdTemplate) {
+        this.eventRepository = eventRepository;
+        this.eventCreator = eventCreator;
+        this.entityManager = entityManager;
+        this.findOrganizerIdTemplate = findOrganizerIdTemplate;
+    }
+
+    public EventResponse createEvent(EventDto event, String organizerName)
+            throws ExecutionException, InterruptedException {
+
+        RequestReplyFuture<String, String, Long> future = findUserId(
+                findOrganizerIdRequestTopic,
+                findOrganizerIdReplyTopic,
+                organizerName,
+                findOrganizerIdTemplate);
+
+        return eventEntityToResponse(eventCreator.createEvent(
+                event,
+                entityManager.getReference(OrganizerEntity.class, future.get().value()))
         );
-
-        record.headers().add(new RecordHeader(
-                KafkaHeaders.REPLY_TOPIC,
-                findOrganizerReplyTopic.getBytes()
-        ));
-
-        RequestReplyFuture<String, Long, OrganizerEntity> future =
-                findOrganizerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
-
-        return eventRepository.save(EventDtoToEventEntity(
-                future.get().value(),
-                venueService.findById(event.venueId()),
-                event));
     }
 
     public void deleteEvent(Long eventId) {
@@ -58,35 +70,63 @@ public class EventService {
 
     }
 
-    public EventEntity updateEvent(Long eventId, EventDto event)
+    public EventResponse updateEvent(Long eventId,
+                                     EventDto event,
+                                     String organizerName)
             throws
+            IllegalArgumentException,
             ExecutionException,
-            InterruptedException,
-            IllegalArgumentException {
+            InterruptedException {
 
         if (!eventRepository.existsById(eventId)) {
             throw new IllegalArgumentException("Event not found");
         }
 
-        ProducerRecord<String, Long> record = new ProducerRecord<>(
-                findOrganizerRequestTopic,
-                event.organizerId()
-        );
+        RequestReplyFuture<String, String, Long> future = findUserId(
+                findOrganizerIdRequestTopic,
+                findOrganizerIdReplyTopic,
+                organizerName,
+                findOrganizerIdTemplate);
 
-        record.headers().add(new RecordHeader(
-                KafkaHeaders.REPLY_TOPIC,
-                findOrganizerReplyTopic.getBytes()
-        ));
+        try {
+            EventEntity entity = eventCreator.createEvent(event,
+                    entityManager.getReference(OrganizerEntity.class, future.get().value())
+            );
+            entity.setId(eventId);
 
-        RequestReplyFuture<String, Long, OrganizerEntity> future =
-                findOrganizerTemplate.sendAndReceive(record, Duration.ofSeconds(5));
+            return eventEntityToResponse(eventRepository.save(entity));
 
-        EventEntity entity = EventDtoToEventEntity(
-                future.get().value(),
-                venueService.findById(event.venueId()),
-                event);
-        entity.setId(eventId);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Organizer not found: " + organizerName);
+        }
+    }
 
-        return eventRepository.save(entity);
+    public EventEntity findById(Long id) {
+        return eventRepository.findById(id).orElse(null);
+    }
+
+    public List<EventResponse> searchEvents(SearchEventRequest request) {
+
+        List<Long> eventIds = eventRepository.searchEventIds(
+                buildSearchEventPattern(request.query()),
+                request.categoryIds(),
+                request.from(),
+                request.to(),
+                request.size(),
+                (request.page() - 1) * request.size());
+
+        return eventRepository.searchEvent(eventIds).stream()
+                .map(EventMapper::eventEntityToResponse)
+                .toList();
+    }
+
+    public List<EventResponse> viewEventNearby(ViewEventNearbyRequest request) {
+
+        return eventRepository.findEventNearby(request.categoryIds(),
+                        request.interval(),
+                        request.location(),
+                        request.radius()).stream()
+                .map(EventMapper::eventEntityToResponse)
+                .toList();
     }
 }
