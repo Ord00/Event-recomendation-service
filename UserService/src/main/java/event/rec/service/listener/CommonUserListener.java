@@ -19,13 +19,7 @@ import static event.rec.service.utils.UserRegistrar.registerUser;
 public class CommonUserListener implements UserListenable<CommonUserRegistrationRequest> {
 
     private final UserService userService;
-    CommonUserService commonUserService;
-
-    @KafkaListener(topics = "${kafka.topics.find.by.username.common.request}")
-    @SendTo
-        public Long findByUsername(@Payload String username) {
-        return userService.findIdByLoginAndRole(username, "USER");
-    }
+    private final CommonUserService commonUserService;
 
     @Transactional
     @KafkaListener(topics = "${kafka.topics.register.common.request}")

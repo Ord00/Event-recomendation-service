@@ -19,15 +19,3 @@ spring:
 server:
   port: 8083
   url: "http://localhost:${server.port}"
-
-kafka:
-  topics:
-    find:
-      by:
-        username:
-          common:
-            request: "FindByUsernameCommonUserReq"
-            response: "FindByUsernameCommonUserResp"
-          organizer:
-            request: "FindByUsernameOrganizerReq"
-            response: "FindByUsernameOrganizerResp"

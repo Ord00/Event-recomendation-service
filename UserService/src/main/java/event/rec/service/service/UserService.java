@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
         String role = userRoleIdentifier.determineUserRole(user.getId());
 
         return new CustomUserDetails(
-                user.getLogin(),
+                user.getId().toString(),
                 user.getPassword(),
                 role
         );
@@ -53,9 +53,5 @@ public class UserService implements UserDetailsService {
                 passwordEncoder.encode(userDTO.password()));
         UserEntity userEntity = userDTOToUserEntity(userWithPasswordDTO);
         return userRepository.save(userEntity);
-    }
-
-    public Long findIdByLoginAndRole(String login, String role) {
-        return userRepository.findIdByLoginAndRole(login, role).orElse(null);
     }
 }

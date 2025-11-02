@@ -2,27 +2,27 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- Таблица пользователей (основная)
 CREATE TABLE "user" (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
     login VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
 
 -- Таблица администраторов
 CREATE TABLE "admin" (
-     id INTEGER PRIMARY KEY REFERENCES "user"(id),
+     id UUID PRIMARY KEY REFERENCES "user"(id),
      full_name VARCHAR(100) NOT NULL
 );
 
 -- Таблица обычных пользователей
 CREATE TABLE common_user (
-   id INTEGER PRIMARY KEY REFERENCES "user"(id),
+   id UUID PRIMARY KEY REFERENCES "user"(id),
    full_name VARCHAR(100) NOT NULL,
    phone_number VARCHAR(20) NOT NULL
 );
 
 -- Таблица организаторов
 CREATE TABLE organizer (
-     id INTEGER PRIMARY KEY REFERENCES "user"(id),
+     id UUID PRIMARY KEY REFERENCES "user"(id),
      organizer_name VARCHAR(100) NOT NULL
 );
 
@@ -49,7 +49,7 @@ CREATE TABLE event (
    recurrence VARCHAR(20),
    status VARCHAR(20) NOT NULL CHECK (status IN ('DRAFT', 'PUBLISHED', 'CANCELED', 'COMPLETED')),
    view_count INTEGER DEFAULT 0,
-   id_organizer INTEGER NOT NULL REFERENCES "organizer"(id),
+   id_organizer UUID NOT NULL REFERENCES "organizer"(id),
    id_venue INTEGER NOT NULL REFERENCES venue(id)
 );
 
@@ -64,7 +64,7 @@ CREATE TABLE category_event (
 -- Таблица подписок
 CREATE TABLE event_subscription (
     id BIGSERIAL PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES common_user(id),
+    id_user UUID NOT NULL REFERENCES common_user(id),
     id_event INTEGER NOT NULL REFERENCES event(id),
     notify_time INTERVAL NOT NULL,
     status VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'COMPLETED')),
@@ -74,7 +74,7 @@ CREATE TABLE event_subscription (
 -- Таблица уведомлений
 CREATE TABLE notification_log (
     id BIGSERIAL PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES common_user(id),
+    id_user UUID NOT NULL REFERENCES common_user(id),
     id_event INTEGER NOT NULL REFERENCES event(id),
     channel VARCHAR(10) NOT NULL CHECK (channel IN ('EMAIL', 'SMS', 'PUSH')),
     status VARCHAR(20) NOT NULL CHECK (status IN ('PENDING', 'SENT', 'FAILED')),

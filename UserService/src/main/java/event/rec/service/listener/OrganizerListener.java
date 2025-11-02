@@ -21,12 +21,6 @@ public class OrganizerListener implements UserListenable<OrganizerRegistrationRe
     private final UserService userService;
     private final OrganizerService organizerService;
 
-    @KafkaListener(topics = "${kafka.topics.find.by.username.organizer.request}")
-    @SendTo
-    public Long findByUsername(@Payload String username) {
-        return userService.findIdByLoginAndRole(username, "ORGANIZER");
-    }
-
     @Transactional
     @KafkaListener(topics = "${kafka.topics.register.organizer.request}")
     @SendTo

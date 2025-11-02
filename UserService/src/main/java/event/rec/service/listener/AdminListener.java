@@ -21,12 +21,6 @@ public class AdminListener implements UserListenable<AdminRegistrationRequest> {
     private final UserService userService;
     private final AdminService adminService;
 
-    @KafkaListener(topics = "${kafka.topics.find.by.username.admin.request}")
-    @SendTo
-    public Long findByUsername(@Payload String username) {
-        return userService.findIdByLoginAndRole(username, "ADMIN");
-    }
-
     @Transactional
     @KafkaListener(topics = "${kafka.topics.register.admin.request}")
     @SendTo

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -38,7 +40,7 @@ public class EventController {
                                          @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            return ResponseEntity.ok(eventService.createEvent(event, jwt.getSubject()));
+            return ResponseEntity.ok(eventService.createEvent(event, UUID.fromString(jwt.getSubject())));
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
@@ -61,7 +63,7 @@ public class EventController {
                                          @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            return ResponseEntity.ok(eventService.updateEvent(eventId, event, jwt.getSubject()));
+            return ResponseEntity.ok(eventService.updateEvent(eventId, event, UUID.fromString(jwt.getSubject())));
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
@@ -73,10 +75,11 @@ public class EventController {
     }
 
     @PostMapping("/favourite")
-    public ResponseEntity<?> addToFavourite(@RequestBody EventSubscriptionDto eventSubscription) {
+    public ResponseEntity<?> addToFavourite(@RequestBody EventSubscriptionDto eventSubscription,
+                                            @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            eventSubscriptionService.addToFavourite(eventSubscription);
+            eventSubscriptionService.addToFavourite(eventSubscription, UUID.fromString(jwt.getSubject()));
             return ResponseEntity.noContent().build();
 
         } catch (TimeoutException e) {
@@ -86,11 +89,12 @@ public class EventController {
         }
     }
 
-    @DeleteMapping("/favourite/{userId}/{eventId}")
-    public ResponseEntity<?> deleteFromFavourite(@PathVariable Long userId, @PathVariable Long eventId) {
+    @DeleteMapping("/favourite/{eventId}")
+    public ResponseEntity<?> deleteFromFavourite(@PathVariable Long eventId,
+                                                 @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            eventSubscriptionService.deleteFromFavourite(userId, eventId);
+            eventSubscriptionService.deleteFromFavourite(UUID.fromString(jwt.getSubject()), eventId);
             return ResponseEntity.noContent().build();
 
         } catch (TimeoutException e) {
@@ -101,10 +105,15 @@ public class EventController {
     }
 
     @GetMapping("/favourite")
-    public ResponseEntity<?> viewFavourite(@ModelAttribute ViewFavouriteRequest request) {
+    public ResponseEntity<?> viewFavourite(@ModelAttribute ViewFavouriteRequest request,
+                                           @AuthenticationPrincipal Jwt jwt) {
         try {
 
-            return ResponseEntity.ok(eventSubscriptionService.viewFavourites(request));
+            return ResponseEntity.ok(eventSubscriptionService.viewFavourites(
+                            request,
+                            UUID.fromString(jwt.getSubject())
+                    )
+            );
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();

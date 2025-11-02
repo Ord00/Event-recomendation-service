@@ -105,7 +105,7 @@ paths:
         - View Events
       parameters:
         - in: query
-          name: userId
+          name: page
           schema:
             type: integer
           required: true
@@ -125,7 +125,7 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
-  /favourite/{userId}/{eventId}:
+  /favourite/{eventId}:
     delete:
       summary: Удалить из избранного
       tags:
@@ -154,13 +154,14 @@ paths:
           name: query
           schema:
             type: string
+          example: "Кино"
         - in: query
           name: categoryIds
           schema:
             type: array
             items:
               type: integer
-          example: [ 1, 2 ]
+          example: [ 1, 5 ]
         - in: query
           name: from
           schema:
@@ -413,9 +414,6 @@ components:
     AddToFavouriteRequest:
       type: object
       properties:
-        userId:
-          type: integer
-          example: 1
         eventId:
           type: integer
           example: 123

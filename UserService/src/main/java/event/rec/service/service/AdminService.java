@@ -23,8 +23,4 @@ public class AdminService {
         adminEntity.setUserEntity(userEntity);
         adminRepository.save(adminEntity);
     }
-
-    public AdminEntity findById(Long id) {
-        return adminRepository.findById(id).orElse(null);
-    }
 }

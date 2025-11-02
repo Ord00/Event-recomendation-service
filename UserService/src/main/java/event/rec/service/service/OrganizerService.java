@@ -23,8 +23,4 @@ public class OrganizerService {
         organizerEntity.setUserEntity(userEntity);
         organizerRepository.save(organizerEntity);
     }
-
-    public OrganizerEntity findById(Long id) {
-        return organizerRepository.findById(id).orElse(null);
-    }
 }

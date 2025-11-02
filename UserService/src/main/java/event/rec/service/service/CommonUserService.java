@@ -23,8 +23,4 @@ public class CommonUserService {
         commonUserEntity.setUserEntity(userEntity);
         commonUserRepository.save(commonUserEntity);
     }
-
-    public CommonUserEntity findById(Long id) {
-        return commonUserRepository.findById(id).orElse(null);
-    }
 }

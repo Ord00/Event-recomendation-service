@@ -20,7 +20,7 @@ public class TokenGenerator extends JwtBaseParser {
         }
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", userDetails.getUsername());
+        claims.put("sub", userDetails.getUsername());
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList());

@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Entity
@@ -20,7 +22,7 @@ public class OrganizerEntity implements UserHolder {
 
     @Id
     @Column(name = "id", nullable = false)
-    private Long id;
+    private UUID id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)

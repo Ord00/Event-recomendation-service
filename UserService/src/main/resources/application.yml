@@ -27,15 +27,6 @@ kafka:
         request: "RegisterOrganizerReq"
       admin:
         request: "RegisterAdminReq"
-    find:
-      by:
-        username:
-          common:
-            request: "FindByUsernameCommonUserReq"
-          organizer:
-            request: "FindByUsernameOrganizerReq"
-          admin:
-            request: "FindByUsernameAdminReq"
 
 server:
   port: 8084
