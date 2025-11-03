@@ -75,4 +75,5 @@
 ***
 
 ## Схема проекта
-<img width="1174" height="803" alt="image" src="https://github.com/user-attachments/assets/0bba2f3f-327a-41d5-982e-7f3d22200ae6" />
+<img width="1117" height="800" alt="image" src="https://github.com/user-attachments/assets/facf0fac-7af9-40c4-87a6-5bbe7691ae33" />
+
