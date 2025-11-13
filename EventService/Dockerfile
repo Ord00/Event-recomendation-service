@@ -4,7 +4,7 @@ COPY build.gradle.kts .
 COPY settings.gradle.kts .
 COPY ./Model ./Model
 COPY ./SecurityCore ./SecurityCore
-COPY ./UserGenerator ./UserGenerator
+COPY ./EventService ./EventService
 RUN gradle :EventService:bootJar -x test --stacktrace --no-daemon
 
 FROM build AS publish
