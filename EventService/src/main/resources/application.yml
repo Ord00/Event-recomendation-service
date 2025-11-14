@@ -19,3 +19,14 @@ spring:
 server:
   port: 8083
   url: "http://localhost:${server.port}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+  endpoint:
+    health:
+      show-details: always

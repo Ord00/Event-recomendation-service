@@ -6,6 +6,9 @@ services:
     environment:
       JWT_SECRET: ${JWT_SECRET}
       JWT_LIFETIME: ${JWT_LIFETIME}
+      AUTH_SERVICE: auth-service
+      USER_SERVICE: user-service
+      EVENT_SERVICE: event-service
     depends_on:
       auth-service:
         condition: service_healthy
@@ -13,6 +16,8 @@ services:
         condition: service_healthy
       event-service:
         condition: service_healthy
+    ports:
+      - "8081:8081"
     networks:
       - app-network
     restart: unless-stopped
@@ -94,7 +99,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
-      interval: 30s
+      interval: 50s
       timeout: 10s
       retries: 3
 
@@ -130,7 +135,7 @@ services:
       start_period: 90s
 
   db:
-    image: postgres:14
+    image: postgis/postgis:14-3.3
     container_name: postgres
     environment:
       POSTGRES_DB: ${PG_DB}
