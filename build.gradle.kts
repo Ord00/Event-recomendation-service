@@ -41,6 +41,17 @@ subprojects {
 		testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 		implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+		testImplementation(platform("org.junit:junit-bom:5.10.0"))
+		testImplementation("org.springframework.boot:spring-boot-starter-test") {
+			exclude(group = "org.junit.vintage")
+			exclude(group = "org.mockito")
+		}
+		testImplementation("org.junit.jupiter:junit-jupiter")
+		testImplementation("org.testcontainers:testcontainers:1.19.8")
+		testImplementation("org.testcontainers:junit-jupiter:1.19.8")
+		testImplementation("org.testcontainers:postgresql:1.19.8")
+		testImplementation("org.mockito:mockito-core:5.4.0")
+		testImplementation("org.mockito:mockito-junit-jupiter:5.4.0")
 	}
 
 	tasks.withType<Test> {

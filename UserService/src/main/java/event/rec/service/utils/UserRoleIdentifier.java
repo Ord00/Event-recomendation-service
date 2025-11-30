@@ -1,29 +1,24 @@
 package event.rec.service.utils;
 
-import event.rec.service.enums.UserRole;
+import event.rec.service.interfaces.UserChecker;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class UserRoleIdentifier {
 
-    private final ApplicationContext context;
+    private final List<UserChecker> userCheckers;
 
-    public String determineUserRole(Long userId) {
-        return Arrays.stream(UserRole.values())
-                .filter(role -> userExistsInRepository(role, userId))
+    public String determineUserRole(UUID userId) {
+
+        return userCheckers.stream()
+                .filter(checker -> checker.isUserInRole(userId))
                 .findFirst()
-                .map(UserRole::getRoleName)
+                .map(UserChecker::getRoleName)
                 .orElseThrow(() -> new IllegalStateException("User has no assigned role"));
-    }
-
-    private boolean userExistsInRepository(UserRole role, Long userId) {
-        JpaRepository<?, Long> repository = context.getBean(role.getRepositoryClass());
-        return repository.existsById(userId);
     }
 }

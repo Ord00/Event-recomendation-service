@@ -10,21 +10,18 @@ import event.rec.service.requests.ViewEventNearbyRequest;
 import event.rec.service.responses.EventResponse;
 import event.rec.service.utils.EventCreator;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
-import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.UUID;
 
 import static event.rec.service.mappers.EventMapper.eventEntityToResponse;
-import static event.rec.service.utils.KafkaRequestSender.findUserId;
 import static event.rec.service.utils.RegexPatternBuilder.buildSearchEventPattern;
 
 @Service
+@RequiredArgsConstructor
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -32,35 +29,12 @@ public class EventService {
 
     private final EntityManager entityManager;
 
-    private final ReplyingKafkaTemplate<String, String, Long> findOrganizerIdTemplate;
-    @Value("${kafka.topics.find.by.username.organizer.request}")
-    private String findOrganizerIdRequestTopic;
-    @Value("${kafka.topics.find.by.username.organizer.response}")
-    private String findOrganizerIdReplyTopic;
-
-    public EventService(EventRepository eventRepository,
-                        EventCreator eventCreator,
-                        EntityManager entityManager,
-                        @Qualifier("findOrganizerTemplate")
-                        ReplyingKafkaTemplate<String, String, Long> findOrganizerIdTemplate) {
-        this.eventRepository = eventRepository;
-        this.eventCreator = eventCreator;
-        this.entityManager = entityManager;
-        this.findOrganizerIdTemplate = findOrganizerIdTemplate;
-    }
-
-    public EventResponse createEvent(EventDto event, String organizerName)
-            throws ExecutionException, InterruptedException {
-
-        RequestReplyFuture<String, String, Long> future = findUserId(
-                findOrganizerIdRequestTopic,
-                findOrganizerIdReplyTopic,
-                organizerName,
-                findOrganizerIdTemplate);
+    public EventResponse createEvent(EventDto event, UUID organizerId) {
 
         return eventEntityToResponse(eventCreator.createEvent(
                 event,
-                entityManager.getReference(OrganizerEntity.class, future.get().value()))
+                entityManager.getReference(OrganizerEntity.class, organizerId)
+                )
         );
     }
 
@@ -72,32 +46,22 @@ public class EventService {
 
     public EventResponse updateEvent(Long eventId,
                                      EventDto event,
-                                     String organizerName)
-            throws
-            IllegalArgumentException,
-            ExecutionException,
-            InterruptedException {
+                                     UUID organizerId) throws IllegalArgumentException {
 
         if (!eventRepository.existsById(eventId)) {
             throw new IllegalArgumentException("Event not found");
         }
 
-        RequestReplyFuture<String, String, Long> future = findUserId(
-                findOrganizerIdRequestTopic,
-                findOrganizerIdReplyTopic,
-                organizerName,
-                findOrganizerIdTemplate);
-
         try {
             EventEntity entity = eventCreator.createEvent(event,
-                    entityManager.getReference(OrganizerEntity.class, future.get().value())
+                    entityManager.getReference(OrganizerEntity.class, organizerId)
             );
             entity.setId(eventId);
 
             return eventEntityToResponse(eventRepository.save(entity));
 
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("Organizer not found: " + organizerName);
+            throw new IllegalArgumentException("Organizer not found: " + organizerId);
         }
     }
 

@@ -14,6 +14,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Entity
@@ -21,7 +23,7 @@ import lombok.Setter;
 public class AdminEntity implements UserHolder {
     @Id
     @Column(name = "id", nullable = false)
-    private Long id;
+    private UUID id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)

@@ -5,17 +5,17 @@ spring:
         webflux:
           routes:
             - id: auth-service
-              uri: http://localhost:8082
+              uri: http://${AUTH_SERVICE:localhost}:8082
               predicates:
                 - Path=/auth/**
             - id: user-service
-              uri: http://localhost:8084
+              uri: http://${USER_SERVICE:localhost}:8084
               predicates:
                 - Path=/api/users/**
               filters:
                 - name: JwtFilter
             - id: event-service
-              uri: http://localhost:8083
+              uri: http://${EVENT_SERVICE:localhost}:8083
               predicates:
                 - Path=/event/**
               filters:
@@ -32,3 +32,14 @@ logging:
   level:
     org.springframework.cloud.gateway: TRACE
     org.springframework.web: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+  endpoint:
+    health:
+      show-details: always

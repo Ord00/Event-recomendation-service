@@ -17,6 +17,7 @@ import lombok.Setter;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ import java.util.Set;
 public class CommonUserEntity implements UserHolder {
     @Id
     @Column(name = "id", nullable = false)
-    private Long id;
+    private UUID id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
