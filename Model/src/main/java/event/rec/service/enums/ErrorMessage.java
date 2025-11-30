@@ -8,6 +8,7 @@ public enum ErrorMessage {
     USER_NOT_FOUND_BY_EMAIL("Пользователь с такой почтой не найден"),
     USER_EXISTS("Пользователь с таким именем уже существует"),
     USER_NOT_FOUND_BY_USERNAME("Пользователь с таким именем не найден"),
+    USER_DOES_NOT_HAVE_ROLE("У пользователя нет роли"),
     USERS_PRODUCT_NOT_FOUND_BY_ID("Данного продукта нет у указанного пользователя"),
     INCORRECT_PRODUCT_UNIT("Единица измерения продукта указана неверно"),
     INCORRECT_PRODUCT_NAME("Продукт с таким названием не найден"),

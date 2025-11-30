@@ -13,6 +13,7 @@ public class UserRegistrar {
             UserService userService,
             T request,
             BiConsumer<UserEntity, T> userTypeCreator) {
+
         if (userService.findUserEntityByLogin(request.getLogin()).isPresent()) {
             return false;
         }

@@ -1,5 +1,4 @@
 package event.rec.service.requests;
 
-public record ViewFavouriteRequest(Long userId,
-                                   Integer page,
+public record ViewFavouriteRequest(Integer page,
                                    Integer size) {}

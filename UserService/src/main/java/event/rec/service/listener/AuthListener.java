@@ -36,6 +36,8 @@ public class AuthListener {
             throw new BadCredentialsException(ErrorMessage.INCORRECT_USER_DATA.getMessage());
         } catch (UsernameNotFoundException e) {
             throw new BadCredentialsException(ErrorMessage.USER_NOT_FOUND_BY_EMAIL.getMessage());
+        } catch (IllegalStateException e) {
+            throw new BadCredentialsException(ErrorMessage.USER_DOES_NOT_HAVE_ROLE.getMessage());
         }
     }
 }
