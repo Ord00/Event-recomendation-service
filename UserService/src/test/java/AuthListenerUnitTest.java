@@ -1,4 +1,5 @@
 import event.rec.service.entities.UserEntity;
+import event.rec.service.enums.ErrorMessage;
 import event.rec.service.listener.AuthListener;
 import event.rec.service.repository.AdminRepository;
 import event.rec.service.repository.CommonUserRepository;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -31,6 +33,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
@@ -94,96 +97,146 @@ public class AuthListenerUnitTest {
         adminId = UUID.randomUUID();
     }
 
-    @Test
-    public void testSignInExistingCommonUser() {
+    private void testSignInExistingUser(UUID userId) {
 
         UserEntity user = new UserEntity(login, passwordEncoder.encode(password));
-        user.setId(commonUserId);
+        user.setId(userId);
+
+        when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
+
+        JwtResponse response = authListener.listenSignIn(request);
+
+        assertNotNull(response.token());
+        assertFalse(response.token().isEmpty());
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secret.getBytes())
+                .build()
+                .parseClaimsJws(response.token())
+                .getBody();
+
+        assertEquals(userId.toString(), claims.getSubject());
+        assertNotNull(claims.getIssuedAt());
+        assertNotNull(claims.getExpiration());
+
+        long tokenLifetime = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
+        assertEquals(lifetime.toMillis(), tokenLifetime);
+    }
+
+
+    @Test
+    public void testSignInExistingCommonUser() {
 
         when(commonUserRepository.existsById(nullable(UUID.class))).thenAnswer(invocation -> {
             UUID id = invocation.getArgument(0);
             return id != null && id.equals(commonUserId);
         });
-        when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
-
-        JwtResponse response = authListener.listenSignIn(request);
-
-        assertNotNull(response.token());
-        assertFalse(response.token().isEmpty());
-
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secret.getBytes())
-                .build()
-                .parseClaimsJws(response.token())
-                .getBody();
-
-        assertEquals(commonUserId.toString(), claims.getSubject());
-        assertNotNull(claims.getIssuedAt());
-        assertNotNull(claims.getExpiration());
-
-        long tokenLifetime = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
-        assertEquals(lifetime.toMillis(), tokenLifetime);
+        testSignInExistingUser(commonUserId);
     }
 
     @Test
     public void testSignInExistingOrganizer() {
 
-        UserEntity user = new UserEntity(login, passwordEncoder.encode(password));
-        user.setId(organizerId);
-
         when(organizerRepository.existsById(nullable(UUID.class))).thenAnswer(invocation -> {
             UUID id = invocation.getArgument(0);
             return id != null && id.equals(organizerId);
         });
-        when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
-
-        JwtResponse response = authListener.listenSignIn(request);
-
-        assertNotNull(response.token());
-        assertFalse(response.token().isEmpty());
-
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secret.getBytes())
-                .build()
-                .parseClaimsJws(response.token())
-                .getBody();
-
-        assertEquals(organizerId.toString(), claims.getSubject());
-        assertNotNull(claims.getIssuedAt());
-        assertNotNull(claims.getExpiration());
-
-        long tokenLifetime = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
-        assertEquals(lifetime.toMillis(), tokenLifetime);
+        testSignInExistingUser(organizerId);
     }
 
     @Test
     public void testSignInExistingAdmin() {
 
+        when(adminRepository.existsById(nullable(UUID.class))).thenAnswer(invocation -> {
+            UUID id = invocation.getArgument(0);
+            return id != null && id.equals(adminId);
+        });
+        testSignInExistingUser(adminId);
+    }
+
+    @Test
+    public void testSignInUserWithoutRole() {
+
+        when(userRepository.findByLogin(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(BadCredentialsException.class,
+                () -> authListener.listenSignIn(request),
+                ErrorMessage.USER_NOT_FOUND_BY_EMAIL.getMessage());
+    }
+
+    private void testSignInUserWithoutRole(UUID userId) {
+
         UserEntity user = new UserEntity(login, passwordEncoder.encode(password));
-        user.setId(adminId);
+        user.setId(userId);
+
+        when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
+
+        assertThrows(BadCredentialsException.class,
+                () -> authListener.listenSignIn(request),
+                ErrorMessage.USER_DOES_NOT_HAVE_ROLE.getMessage());
+    }
+
+    @Test
+    public void testSignInCommonUserWithoutRole() {
+
+        when(commonUserRepository.existsById(nullable(UUID.class))).thenReturn(false);
+        testSignInUserWithoutRole(commonUserId);
+    }
+
+    @Test
+    public void testSignInOrganizerWithoutRole() {
+
+        when(organizerRepository.existsById(nullable(UUID.class))).thenReturn(false);
+        testSignInUserWithoutRole(organizerId);
+    }
+
+    @Test
+    public void testSignInAdminWithoutRole() {
+
+        when(adminRepository.existsById(nullable(UUID.class))).thenReturn(false);
+        testSignInUserWithoutRole(adminId);
+    }
+
+    private void testSignInUserWithIncorrectPassword(UUID userId) {
+
+        UserEntity user = new UserEntity(login, passwordEncoder.encode(password));
+        user.setId(userId);
+
+        when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
+        request = new JwtRequest(login, "-1");
+
+        assertThrows(BadCredentialsException.class,
+                () -> authListener.listenSignIn(request),
+                ErrorMessage.INCORRECT_USER_DATA.getMessage());
+    }
+
+    @Test
+    public void testSignInCommonUserWithIncorrectPassword() {
+
+        when(commonUserRepository.existsById(nullable(UUID.class))).thenAnswer(invocation -> {
+            UUID id = invocation.getArgument(0);
+            return id != null && id.equals(commonUserId);
+        });
+        testSignInUserWithIncorrectPassword(commonUserId);
+    }
+
+    @Test
+    public void testSignInOrganizerWithIncorrectPassword() {
+
+        when(organizerRepository.existsById(nullable(UUID.class))).thenAnswer(invocation -> {
+            UUID id = invocation.getArgument(0);
+            return id != null && id.equals(organizerId);
+        });
+        testSignInUserWithIncorrectPassword(organizerId);
+    }
+
+    @Test
+    public void testSignInAdminWithIncorrectPassword() {
 
         when(adminRepository.existsById(nullable(UUID.class))).thenAnswer(invocation -> {
             UUID id = invocation.getArgument(0);
             return id != null && id.equals(adminId);
         });
-        when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
-
-        JwtResponse response = authListener.listenSignIn(request);
-
-        assertNotNull(response.token());
-        assertFalse(response.token().isEmpty());
-
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secret.getBytes())
-                .build()
-                .parseClaimsJws(response.token())
-                .getBody();
-
-        assertEquals(adminId.toString(), claims.getSubject());
-        assertNotNull(claims.getIssuedAt());
-        assertNotNull(claims.getExpiration());
-
-        long tokenLifetime = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
-        assertEquals(lifetime.toMillis(), tokenLifetime);
+        testSignInUserWithIncorrectPassword(adminId);
     }
 }
