@@ -14,11 +14,5 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.kafka:spring-kafka-test")
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework.security:spring-security-test")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
