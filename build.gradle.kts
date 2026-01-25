@@ -3,7 +3,6 @@ plugins {
 	id("org.springframework.boot") version "3.5.3"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.springdoc.openapi-gradle-plugin") version "1.8.0" apply false
-
 }
 
 group = "event.rec.service"
@@ -36,17 +35,19 @@ subprojects {
 	}
 
 	dependencies {
-		compileOnly("org.projectlombok:lombok:1.18.30")
 		annotationProcessor("org.projectlombok:lombok:1.18.30")
-		testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+		compileOnly("org.projectlombok:lombok:1.18.30")
 		implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-		testImplementation(platform("org.junit:junit-bom:5.10.0"))
+
+		testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 		testImplementation("org.springframework.boot:spring-boot-starter-test") {
 			exclude(group = "org.junit.vintage")
 			exclude(group = "org.mockito")
 		}
-		testImplementation("org.junit.jupiter:junit-jupiter")
 		testImplementation("org.testcontainers:testcontainers:1.19.8")
+		testImplementation(platform("org.junit:junit-bom:5.10.0"))
+		testImplementation("org.junit.jupiter:junit-jupiter")
 		testImplementation("org.testcontainers:junit-jupiter:1.19.8")
 		testImplementation("org.testcontainers:postgresql:1.19.8")
 		testImplementation("org.mockito:mockito-core:5.4.0")
