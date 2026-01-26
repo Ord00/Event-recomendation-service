@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.TimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,7 +58,6 @@ public class AuthController {
     }
 
     @PostMapping("/admin/register")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerAdmin(@Validated @RequestBody AdminRegistrationRequest request) {
         return registerUser(request, adminRegisterService);
     }
