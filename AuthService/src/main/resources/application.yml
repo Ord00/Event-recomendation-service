@@ -9,6 +9,9 @@ springdoc:
   default-produces-media-type: application/json
 
 spring:
+  profiles:
+    active: production
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
