@@ -9,6 +9,7 @@ import event.rec.service.exceptions.AppError;
 import event.rec.service.requests.JwtRequest;
 import event.rec.service.requests.OrganizerRegistrationRequest;
 import event.rec.service.requests.RegistrationRequest;
+import event.rec.service.responses.JwtResponse;
 import event.rec.service.service.AdminRegisterService;
 import event.rec.service.service.AuthService;
 import event.rec.service.service.CommonUserRegisterService;
@@ -38,7 +39,13 @@ public class AuthController {
     public ResponseEntity<?> signIn(@RequestBody JwtRequest jwtRequest) {
         try {
 
-            return ResponseEntity.ok(authService.signIn(jwtRequest));
+            JwtResponse jwtResponse = authService.signIn(jwtRequest);
+            if (jwtResponse.isSuccess()) {
+                return ResponseEntity.ok(jwtResponse.token());
+            } else {
+                return ResponseEntity.status(jwtResponse.errorResponse().code())
+                        .body(jwtResponse.errorResponse().message());
+            }
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();

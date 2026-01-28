@@ -58,7 +58,7 @@ public class AuthServiceUnitTest {
     @Test
     void testSignIn() throws ExecutionException, InterruptedException {
 
-        JwtResponse response = new JwtResponse("testToken");
+        JwtResponse response = new JwtResponse("testToken", null);
 
         when(consumerRecord.value()).thenReturn(response);
 
