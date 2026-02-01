@@ -1,3 +1,5 @@
+package event.rec.service.unit;
+
 import event.rec.service.requests.JwtRequest;
 import event.rec.service.responses.JwtResponse;
 import event.rec.service.service.AuthService;
