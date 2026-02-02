@@ -5,15 +5,15 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
-@TestConfiguration
+@TestConfiguration(proxyBeanMethods = false)
 public class TestContainersConfig {
 
     @Bean
     @ServiceConnection
-    public PostgreSQLContainer<?> postgreSQLContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"))
+    PostgreSQLContainer<?> postgresContainer() {
+
+        return new PostgreSQLContainer<>("postgres:15-alpine")
                 .withDatabaseName("testdb")
                 .withUsername("test")
                 .withPassword("test");
@@ -21,7 +21,8 @@ public class TestContainersConfig {
 
     @Bean
     @ServiceConnection
-    public KafkaContainer kafkaContainer() {
-        return new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
+    KafkaContainer kafkaContainer() {
+
+        return new KafkaContainer("confluentinc/cp-kafka:7.4.0");
     }
 }
