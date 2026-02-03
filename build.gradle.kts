@@ -43,7 +43,7 @@ subprojects {
         testImplementation("org.springframework.boot:spring-boot-test-autoconfigure")
 
         testImplementation("org.springframework.boot:spring-boot-testcontainers")
-        testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.8"))
+        testImplementation(platform("org.testcontainers:testcontainers-bom:2.0.3"))
         testImplementation("org.testcontainers:testcontainers")
         testImplementation("org.testcontainers:junit-jupiter")
         testImplementation("org.testcontainers:postgresql")

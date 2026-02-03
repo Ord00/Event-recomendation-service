@@ -29,15 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ImportTestcontainers(TestContainersConfig.class)
 public class AuthServiceIntegrationTest {
 
-/*    static {
-        System.setProperty(
-                "docker.client.strategy",
-                "org.testcontainers.dockerclient.NpipeSocketClientProviderStrategy");
-        System.setProperty("DOCKER_HOST", "npipe:////./pipe/docker_engine");
-        System.setProperty("TESTCONTAINERS_RYUK_DISABLED", "true");
-        System.setProperty("TESTCONTAINERS_CHECKS_DISABLE", "true");
-    }*/
-
     @Autowired
     private MockMvc mockMvc;
 

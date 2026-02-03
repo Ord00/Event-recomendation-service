@@ -3,8 +3,8 @@ package event.rec.service;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
-import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.kafka.KafkaContainer;
 
 @TestConfiguration(proxyBeanMethods = false)
 public class TestContainersConfig {
@@ -23,6 +23,6 @@ public class TestContainersConfig {
     @ServiceConnection
     KafkaContainer kafkaContainer() {
 
-        return new KafkaContainer("confluentinc/cp-kafka:7.4.0");
+        return new KafkaContainer("apache/kafka:4.0.0");
     }
 }
