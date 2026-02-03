@@ -9,6 +9,7 @@ import event.rec.service.exceptions.AppError;
 import event.rec.service.requests.JwtRequest;
 import event.rec.service.requests.OrganizerRegistrationRequest;
 import event.rec.service.requests.RegistrationRequest;
+import event.rec.service.responses.JwtResponse;
 import event.rec.service.service.AdminRegisterService;
 import event.rec.service.service.AuthService;
 import event.rec.service.service.CommonUserRegisterService;
@@ -17,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.TimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +39,13 @@ public class AuthController {
     public ResponseEntity<?> signIn(@RequestBody JwtRequest jwtRequest) {
         try {
 
-            return ResponseEntity.ok(authService.signIn(jwtRequest));
+            JwtResponse jwtResponse = authService.signIn(jwtRequest);
+            if (jwtResponse.isSuccess()) {
+                return ResponseEntity.ok(jwtResponse.token());
+            } else {
+                return ResponseEntity.status(jwtResponse.errorResponse().code())
+                        .body(jwtResponse.errorResponse().message());
+            }
 
         } catch (TimeoutException e) {
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).build();
@@ -59,7 +65,6 @@ public class AuthController {
     }
 
     @PostMapping("/admin/register")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerAdmin(@Validated @RequestBody AdminRegistrationRequest request) {
         return registerUser(request, adminRegisterService);
     }

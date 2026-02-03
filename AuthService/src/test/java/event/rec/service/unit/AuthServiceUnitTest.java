@@ -1,3 +1,5 @@
+package event.rec.service.unit;
+
 import event.rec.service.requests.JwtRequest;
 import event.rec.service.responses.JwtResponse;
 import event.rec.service.service.AuthService;
@@ -58,7 +60,7 @@ public class AuthServiceUnitTest {
     @Test
     void testSignIn() throws ExecutionException, InterruptedException {
 
-        JwtResponse response = new JwtResponse("testToken");
+        JwtResponse response = new JwtResponse("testToken", null);
 
         when(consumerRecord.value()).thenReturn(response);
 

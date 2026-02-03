@@ -1,0 +1,10 @@
+jwt:
+  secret: test-secret-key-for-jwt-token-generation-in-tests
+  lifetime: 60000
+
+logging:
+  level:
+    org.testcontainers: DEBUG
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: DEBUG
+    org.springframework.boot.testcontainers: DEBUG

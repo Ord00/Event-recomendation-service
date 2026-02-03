@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,13 +30,13 @@ public class AuthListener {
 
             if (passwordEncoder.matches(request.password(), userDetails.getPassword())) {
                 String token = tokenGenerator.generateToken(userDetails);
-                return new JwtResponse(token);
+                return JwtResponse.success(token);
             }
-            throw new BadCredentialsException(ErrorMessage.INCORRECT_USER_DATA.getMessage());
+            return JwtResponse.error(ErrorMessage.INCORRECT_USER_DATA.getMessage(), 401);
         } catch (UsernameNotFoundException e) {
-            throw new BadCredentialsException(ErrorMessage.USER_NOT_FOUND_BY_EMAIL.getMessage());
+            return JwtResponse.error(ErrorMessage.USER_NOT_FOUND_BY_EMAIL.getMessage(), 404);
         } catch (IllegalStateException e) {
-            throw new BadCredentialsException(ErrorMessage.USER_DOES_NOT_HAVE_ROLE.getMessage());
+            return JwtResponse.error(ErrorMessage.USER_DOES_NOT_HAVE_ROLE.getMessage(), 403);
         }
     }
 }
