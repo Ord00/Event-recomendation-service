@@ -36,6 +36,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_LIFETIME: ${JWT_LIFETIME}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_PROFILES_ACTIVE: bootstrap
     depends_on:
       user-service:
         condition: service_healthy

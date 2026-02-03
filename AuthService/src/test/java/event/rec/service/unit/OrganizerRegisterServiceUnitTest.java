@@ -1,7 +1,9 @@
+package event.rec.service.unit;
+
 import event.rec.service.enums.ErrorMessage;
 import event.rec.service.exceptions.RegisterUserException;
-import event.rec.service.requests.CommonUserRegistrationRequest;
-import event.rec.service.service.CommonUserRegisterService;
+import event.rec.service.requests.OrganizerRegistrationRequest;
+import event.rec.service.service.OrganizerRegisterService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,41 +28,40 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CommonUserRegisterServiceUnitTest {
+public class OrganizerRegisterServiceUnitTest {
 
     @Mock
-    private ReplyingKafkaTemplate<String, CommonUserRegistrationRequest, Boolean> commonUserRegisterTemplate;
+    private ReplyingKafkaTemplate<String, OrganizerRegistrationRequest, Boolean> organizerRegisterTemplate;
 
     @InjectMocks
-    private CommonUserRegisterService commonUserRegisterService;
+    private OrganizerRegisterService organizerRegisterService;
 
-    private CommonUserRegistrationRequest request;
+    private OrganizerRegistrationRequest request;
     private ConsumerRecord<String, Boolean> consumerRecord;
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException {
 
-        String commonUserRegisterRequestTopic = "common-user-register-request";
-        ReflectionTestUtils.setField(commonUserRegisterService,
-                "registerCommonUserRequestTopic",
-                commonUserRegisterRequestTopic);
-        String commonUserRegisterResponseTopic = "common-user-register-response";
-        ReflectionTestUtils.setField(commonUserRegisterService,
-                "registerCommonUserReplyTopic",
-                commonUserRegisterResponseTopic);
+        String organizerRegisterRequestTopic = "organizer-register-request";
+        ReflectionTestUtils.setField(organizerRegisterService,
+                "registerOrganizerRequestTopic",
+                organizerRegisterRequestTopic);
+        String organizerRegisterResponseTopic = "organizer-register-response";
+        ReflectionTestUtils.setField(organizerRegisterService,
+                "registerOrganizerReplyTopic",
+                organizerRegisterResponseTopic);
 
-        request = new CommonUserRegistrationRequest();
-        request.setFullName("Test User");
+        request = new OrganizerRegistrationRequest();
+        request.setOrganizerName("Test User");
         request.setLogin("testUser");
         request.setPassword("testPassword");
-        request.setPhoneNumber("testPhoneNumber");
-        request.setUserType("USER");
+        request.setUserType("ORGANIZER");
 
         consumerRecord = mock(ConsumerRecord.class);
-        RequestReplyFuture<String, CommonUserRegistrationRequest, Boolean> future = mock(RequestReplyFuture.class);
+        RequestReplyFuture<String, OrganizerRegistrationRequest, Boolean> future = mock(RequestReplyFuture.class);
 
         doReturn(consumerRecord).when(future).get();
-        doReturn(future).when(commonUserRegisterTemplate).sendAndReceive(
+        doReturn(future).when(organizerRegisterTemplate).sendAndReceive(
                 any(ProducerRecord.class),
                 any(Duration.class));
     }
@@ -72,7 +73,7 @@ public class CommonUserRegisterServiceUnitTest {
 
         RegisterUserException exception = assertThrows(
                 RegisterUserException.class,
-                () -> commonUserRegisterService.registerUser(request)
+                () -> organizerRegisterService.registerUser(request)
         );
 
         assertEquals(ErrorMessage.USER_EXISTS.getMessage(), exception.getMessage());
@@ -83,6 +84,6 @@ public class CommonUserRegisterServiceUnitTest {
 
         when(consumerRecord.value()).thenReturn(Boolean.TRUE);
 
-        assertDoesNotThrow(() -> commonUserRegisterService.registerUser(request));
+        assertDoesNotThrow(() -> organizerRegisterService.registerUser(request));
     }
 }
